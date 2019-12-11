@@ -7,13 +7,42 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SLDownloadModel.h"
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 typedef NS_ENUM(NSInteger, SLDownloadQueueMode) {
     SLDownloadQueueModeFIFO, // 先入先出
     SLDownloadQueueModeFILO  // 先入后出
 };
+
+typedef NS_ENUM(NSInteger, SLDownloadState) {
+    SLDownloadStateWaiting,
+    SLDownloadStateRunning,
+    SLDownloadStateSuspended,
+    SLDownloadStateCanceled,
+    SLDownloadStateCompleted,
+    SLDownloadStateFailed
+};
+
+@interface SLDownloadModel : NSObject
+@property (nonatomic, strong) NSOutputStream *outputStream; // write datas to the file
+
+@property (nonatomic, strong) NSURLSessionDataTask *dataTask;
+
+@property (nonatomic, strong) NSURL *url;
+
+@property (nonatomic, assign) NSInteger totalLength;
+
+@property (nonatomic, copy) void (^stateBlock)(SLDownloadState state);
+
+@property (nonatomic, copy) void (^progressBlock)(NSInteger receivedSize, NSInteger expectedSize, CGFloat progress);
+
+@property (nonatomic, copy) void (^completionBlock)(BOOL isSuccess, NSString *filePath, NSError *_Nullable error);
+
+- (void)closeOutputStream;
+
+- (void)openOutputStream;
+@end
 
 @interface SLDownloadManager : NSObject
 @property (nonatomic, copy) NSString *downloadFileDir;// 文件下载路径

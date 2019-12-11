@@ -15,7 +15,6 @@
 		6C2FD396239FCD6600CA229B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6C2FD394239FCD6600CA229B /* LaunchScreen.storyboard */; };
 		6C2FD399239FCD6600CA229B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C2FD398239FCD6600CA229B /* main.m */; };
 		6C2FD3A5239FD0BE00CA229B /* SLDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C2FD3A4239FD0BD00CA229B /* SLDownloadManager.m */; };
-		6C2FD3A8239FD25800CA229B /* SLDownloadModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C2FD3A7239FD25800CA229B /* SLDownloadModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,8 +32,6 @@
 		6C2FD398239FCD6600CA229B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		6C2FD3A3239FD0BD00CA229B /* SLDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLDownloadManager.h; sourceTree = "<group>"; };
 		6C2FD3A4239FD0BD00CA229B /* SLDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLDownloadManager.m; sourceTree = "<group>"; };
-		6C2FD3A6239FD25800CA229B /* SLDownloadModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLDownloadModel.h; sourceTree = "<group>"; };
-		6C2FD3A7239FD25800CA229B /* SLDownloadModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SLDownloadModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,8 +85,6 @@
 			children = (
 				6C2FD3A3239FD0BD00CA229B /* SLDownloadManager.h */,
 				6C2FD3A4239FD0BD00CA229B /* SLDownloadManager.m */,
-				6C2FD3A6239FD25800CA229B /* SLDownloadModel.h */,
-				6C2FD3A7239FD25800CA229B /* SLDownloadModel.m */,
 			);
 			path = Download;
 			sourceTree = "<group>";
@@ -166,7 +161,6 @@
 			files = (
 				6C2FD38E239FCD6000CA229B /* ViewController.m in Sources */,
 				6C2FD388239FCD6000CA229B /* AppDelegate.m in Sources */,
-				6C2FD3A8239FD25800CA229B /* SLDownloadModel.m in Sources */,
 				6C2FD399239FCD6600CA229B /* main.m in Sources */,
 				6C2FD3A5239FD0BE00CA229B /* SLDownloadManager.m in Sources */,
 				6C2FD38B239FCD6000CA229B /* SceneDelegate.m in Sources */,
