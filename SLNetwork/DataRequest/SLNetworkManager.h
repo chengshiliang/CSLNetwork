@@ -12,8 +12,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SLNetworkManager : NSObject
-//key: SLRequestBase.description  value: taskDescription
-@property (nonatomic, copy) NSDictionary *taskIds;
+@property (nonatomic, copy) NSDictionary<NSNumber *, NSURLSessionTask *> *taskIds;
 @property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
 + (instancetype)share;
 - (void)requestWithModel:(id<SLRequestDataProtocol>)model;

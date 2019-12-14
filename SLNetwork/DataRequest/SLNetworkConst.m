@@ -7,6 +7,7 @@
 
 #import "SLNetworkConst.h"
 
+const NSString *const SLNetworkServiceChangeName = @"fontSize";
 @implementation SLNetworkConst
 
 @end

@@ -41,9 +41,12 @@ static SLNetworkManager *sharedInstance;
         [acceptableContentTypes addObject:@"text/plain"];
         self.sessionManager.responseSerializer.acceptableContentTypes = [acceptableContentTypes copy];
         
-        // 添加观察 主动切换  因为需求
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceivedSwitchSeriveNotification:) name:@"didReceivedSwitchSeriveNotification" object:nil];
     }
     return self;
+}
+
+- (void)requestWithModel:(id<SLRequestDataProtocol>)model {
+    
 }
 @end
