@@ -6,7 +6,43 @@
 //
 
 #import "SLNetworkConfig.h"
+#import <SLNetwork/SLNetworkTool.h>
+
+@interface SLNetworkConfig()
+@property (nonatomic, strong) NSMutableDictionary *commonHeaders;
+@end
 
 @implementation SLNetworkConfig
-
+static SLNetworkConfig *sharedInstance;
++ (instancetype)share {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[super allocWithZone:NULL] init];
+        sharedInstance.commonHeaders = [NSMutableDictionary dictionary];
+    });
+    return sharedInstance;
+}
++ (instancetype)allocWithZone:(struct _NSZone *)zone {
+    return [self share];
+}
+- (void)addCommonRequestHeaderWithKey:(NSString *)key value:(id)value {
+    if ([SLNetworkTool sl_networkEmptyString:key]) return;
+    if (!value) return;
+    [sharedInstance.commonHeaders setValue:value forKey:key];
+}
+- (void)addCommonRequestHeaderWithParams:(NSDictionary *)params {
+    if (!params) return;
+    [sharedInstance.commonHeaders addEntriesFromDictionary:params];
+}
+- (NSDictionary *)commonHeader {
+    return [self.commonHeaders copy];
+}
+- (BOOL)handleResponseDataWithReponse:(NSURLResponse *)response
+                       responseObject:(id)responseObject
+                                error:(NSError *)error {
+    if (self.responseBlock) {
+        return sharedInstance.responseBlock(response, responseObject, error);
+    }
+    return NO;
+}
 @end

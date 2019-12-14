@@ -8,6 +8,7 @@
 #import "SLNetworkManager.h"
 #import <SLNetwork/SLRequestSerialization.h>
 #import <SLNetwork/SLNetworkTool.h>
+#import <SLNetwork/SLNetworkConfig.h>
 
 
 @interface SLNetworkManager()
@@ -46,19 +47,21 @@ static SLNetworkManager *sharedInstance;
 }
 
 - (void)requestWithModel:(id<SLRequestDataProtocol>)model
-       completionHandler:(SLNetworkCompletionHandle)completionHandle {
+       completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
     [self requestWithModel:model uploadProgress:nil completionHandler:completionHandle];
 }
 
 - (void)requestWithModel:(id<SLRequestDataProtocol>)model
           uploadProgress:(void(^)(NSProgress *uploadProgress))uploadProgressBlock
-       completionHandler:(SLNetworkCompletionHandle)completionHandle {
+       completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
     NSMutableURLRequest *request = [sharedInstance.requestSerialization generateRequestWithModel:model];
     if (!request) return;
     __weak typeof (self)weakSelf = self;
     NSURLSessionDataTask *task;
     if ([SLNetworkTool isUploadRequest:[model uploadFiles]]) {
-        task = [self.sessionManager uploadTaskWithStreamedRequest:request progress:uploadProgressBlock completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        task = [self.sessionManager uploadTaskWithStreamedRequest:request
+                                                         progress:uploadProgressBlock
+                                                completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
             __strong typeof (weakSelf)strongSelf = weakSelf;
             [strongSelf handleReponseResultWithModel:model
                                              reponse:response
@@ -89,10 +92,13 @@ static SLNetworkManager *sharedInstance;
                              reponse:(NSURLResponse *)response
                       responseObject:(id)responseObject
                                error:(NSError *)error
-                   completionHandler:(SLNetworkCompletionHandle)completionHandle {
+                   completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
     dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
     [self.requestInfo removeObjectForKey:[model description]];
     dispatch_semaphore_signal(sharedInstance.semaphore);
+    if ([[SLNetworkConfig share]handleResponseDataWithReponse:response
+                                               responseObject:responseObject
+                                                        error:error]) return;
     !completionHandle ?: completionHandle(response, responseObject, error);
 }
 
