@@ -15,6 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)dictionaryToString:(NSDictionary *)dictionary;
 + (NSString *)realUrlString:(id<SLRequestDataProtocol>)model;
 + (NSString *)requestMethodFromMethodType:(SLRequestMethod)method;
++ (NSString *)fileTypeFromFileName:(NSString *)fileName;
++ (NSString *)sl_md5String:(NSString *)string;
++ (BOOL)isUploadRequest:(NSArray<SLUploadFile *> *)files;
 @end
 
 NS_ASSUME_NONNULL_END

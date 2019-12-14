@@ -7,12 +7,12 @@
 
 #import <Foundation/Foundation.h>
 #import <SLNetwork/SLRequestDataProtocol.h>
-#import <AFNetworking/AFURLRequestSerialization.h>
+
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SLRequestSerialization : NSObject
-@property (nonatomic, strong) AFHTTPRequestSerializer *requestSerialize;
+- (NSMutableURLRequest *)generateRequestWithModel:(id<SLRequestDataProtocol>)model;
 @end
 
 NS_ASSUME_NONNULL_END

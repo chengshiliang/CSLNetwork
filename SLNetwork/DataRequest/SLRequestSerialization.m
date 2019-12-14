@@ -8,16 +8,24 @@
 #import "SLRequestSerialization.h"
 #import <SLNetwork/SLNetworkTool.h>
 #import <SLNetwork/SLNetworkConfig.h>
+#import <SLNetwork/SLUploadFile.h>
+#import <AFNetworking/AFURLRequestSerialization.h>
+
+@interface SLRequestSerialization()
+@property (nonatomic, strong) AFHTTPRequestSerializer *requestSerialize;
+@end
 
 @implementation SLRequestSerialization
-- (NSMutableURLRequest *)generateRequestWithModel:(id<SLRequestDataProtocol>)model {
+- (NSMutableURLRequest *)generateRequestWithModel:(id<SLRequestDataProtocol>)model { 
     NSString *urlString = [SLNetworkTool realUrlString:model];
     if ([SLNetworkTool sl_networkEmptyString:urlString]) return nil;
-    NSArray *uploadFiles = [model uploadFiles];
+    NSArray<SLUploadFile *> *uploadFiles = [model uploadFiles];
     NSMutableURLRequest *request;
-    if (uploadFiles && uploadFiles.count > 0) {
+    if ([SLNetworkTool isUploadRequest:uploadFiles]) {
         request = [self.requestSerialize multipartFormRequestWithMethod:[SLNetworkTool requestMethodFromMethodType:[model requestMethod]] URLString:urlString parameters:[model requestParams] constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
-            
+            [uploadFiles enumerateObjectsUsingBlock:^(SLUploadFile *file, NSUInteger idx, BOOL *stop) {
+                [formData appendPartWithFileData:file.fileData name:file.name fileName:file.fileName mimeType:file.mimeType];
+            }];
         } error:nil];
     } else {
         request = [self.requestSerialize requestWithMethod:[SLNetworkTool requestMethodFromMethodType:[model requestMethod]] URLString:urlString parameters:[model requestParams] error:nil];
@@ -31,7 +39,7 @@
         if (!value) continue;
         [request setValue:value forHTTPHeaderField:key];
     }
-    return nil;
+    return request;
 }
 
 - (AFHTTPRequestSerializer *)requestSerialize {
