@@ -22,7 +22,7 @@ DEPENDENCIES:
   - SLNetwork (from `../`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git:
     - AFNetworking
 
 EXTERNAL SOURCES:
@@ -33,6 +33,6 @@ SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   SLNetwork: 58d9e64a111600bdb9802492c39c2a3d513d2ce1
 
-PODFILE CHECKSUM: 51b7a3dbbde1aa60a6caab37c3a1f006f2114dff
+PODFILE CHECKSUM: 3ad64df63d04b2bbc7490c25fb71821c53c94927
 
 COCOAPODS: 1.8.4

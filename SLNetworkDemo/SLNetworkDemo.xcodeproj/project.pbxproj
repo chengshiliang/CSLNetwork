@@ -15,7 +15,6 @@
 		6C2FD393239FCD6600CA229B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6C2FD392239FCD6600CA229B /* Assets.xcassets */; };
 		6C2FD396239FCD6600CA229B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6C2FD394239FCD6600CA229B /* LaunchScreen.storyboard */; };
 		6C2FD399239FCD6600CA229B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C2FD398239FCD6600CA229B /* main.m */; };
-		6C2FD3A5239FD0BE00CA229B /* SLDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C2FD3A4239FD0BD00CA229B /* SLDownloadManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,8 +31,6 @@
 		6C2FD395239FCD6600CA229B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6C2FD397239FCD6600CA229B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6C2FD398239FCD6600CA229B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		6C2FD3A3239FD0BD00CA229B /* SLDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLDownloadManager.h; sourceTree = "<group>"; };
-		6C2FD3A4239FD0BD00CA229B /* SLDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLDownloadManager.m; sourceTree = "<group>"; };
 		A47D1AF757A1403D956F7006 /* Pods-SLNetworkDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SLNetworkDemo.release.xcconfig"; path = "Target Support Files/Pods-SLNetworkDemo/Pods-SLNetworkDemo.release.xcconfig"; sourceTree = "<group>"; };
 		A9CC9A10C185F010D6F53C3D /* libPods-SLNetworkDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SLNetworkDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -77,7 +74,6 @@
 				6C2FD38A239FCD6000CA229B /* SceneDelegate.m */,
 				6C2FD38C239FCD6000CA229B /* ViewController.h */,
 				6C2FD38D239FCD6000CA229B /* ViewController.m */,
-				6C2FD3A2239FD0BD00CA229B /* Download */,
 				6C2FD38F239FCD6000CA229B /* Main.storyboard */,
 				6C2FD392239FCD6600CA229B /* Assets.xcassets */,
 				6C2FD394239FCD6600CA229B /* LaunchScreen.storyboard */,
@@ -85,15 +81,6 @@
 				6C2FD398239FCD6600CA229B /* main.m */,
 			);
 			path = SLNetworkDemo;
-			sourceTree = "<group>";
-		};
-		6C2FD3A2239FD0BD00CA229B /* Download */ = {
-			isa = PBXGroup;
-			children = (
-				6C2FD3A3239FD0BD00CA229B /* SLDownloadManager.h */,
-				6C2FD3A4239FD0BD00CA229B /* SLDownloadManager.m */,
-			);
-			path = Download;
 			sourceTree = "<group>";
 		};
 		999A73B156855E6E30B35E9A /* Frameworks */ = {
@@ -110,7 +97,6 @@
 				5D631B26EB79A909AD1052A3 /* Pods-SLNetworkDemo.debug.xcconfig */,
 				A47D1AF757A1403D956F7006 /* Pods-SLNetworkDemo.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -213,7 +199,6 @@
 				6C2FD38E239FCD6000CA229B /* ViewController.m in Sources */,
 				6C2FD388239FCD6000CA229B /* AppDelegate.m in Sources */,
 				6C2FD399239FCD6600CA229B /* main.m in Sources */,
-				6C2FD3A5239FD0BE00CA229B /* SLDownloadManager.m in Sources */,
 				6C2FD38B239FCD6000CA229B /* SceneDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
