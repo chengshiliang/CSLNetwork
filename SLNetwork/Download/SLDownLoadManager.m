@@ -7,6 +7,7 @@
 //
 
 #import "SLDownloadManager.h"
+#import <SLNetwork/SLNetworkTool.h>
 
 @implementation SLDownloadModel
 - (void)closeOutputStream {
@@ -81,7 +82,7 @@
            state:(void(^)(SLDownloadState state))stateBlock
         progress:(void(^)(NSInteger receivedSize, NSInteger expectedSize, CGFloat progress))progressBlock
       completion:(void(^)(BOOL isSuccess, NSString *filePath, NSError *_Nullable error))completionBlock {
-    if (!urlString) return;
+    if ([SLNetworkTool sl_networkEmptyString:urlString]) return;
     NSURL *url = [NSURL URLWithString:urlString];
     NSString *downloadFilePath = [self downloadFilePathOfURL:url];
     if ([self doneDownloadOfURL:url]) {
@@ -285,7 +286,7 @@
 }
 
 - (void)deleteFile:(NSString *)fileName {
-    if (!fileName) return;
+    if ([SLNetworkTool sl_networkEmptyString:fileName]) return;
     NSMutableDictionary *filesTotalLength = [NSMutableDictionary dictionaryWithContentsOfFile:[self downloadFileLengthPath]];
     [filesTotalLength removeObjectForKey:fileName];
     [filesTotalLength writeToFile:[self downloadFileLengthPath] atomically:YES];
