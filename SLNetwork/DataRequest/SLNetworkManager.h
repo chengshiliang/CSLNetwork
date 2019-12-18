@@ -15,13 +15,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSDictionary<NSNumber *, NSURLSessionTask *> *requestTasks;
 @property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
 + (instancetype)share;
-- (void)requestWithModel:(id<SLRequestDataProtocol>)model
-       completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle;
-- (void)requestWithModel:(id<SLRequestDataProtocol>)model
-          uploadProgress:(void(^)(NSProgress *uploadProgress))uploadProgressBlock
-       completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle;
+- (NSNumber *)requestWithModel:(id<SLRequestDataProtocol>)model
+             completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle;
+- (NSNumber *)requestWithModel:(id<SLRequestDataProtocol>)model
+                uploadProgress:(void(^)(NSProgress *uploadProgress))uploadProgressBlock
+             completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle;
 - (void)cancelAllTask;
-- (void)cancelTaskWithModel:(id<SLRequestDataProtocol>)model;
+- (void)cancelTaskWithtaskIdentifier:(NSNumber *)taskIdentifierl;
 @end
 
 NS_ASSUME_NONNULL_END

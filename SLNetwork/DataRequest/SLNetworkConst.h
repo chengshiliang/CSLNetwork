@@ -10,8 +10,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-UIKIT_EXTERN const NSString *const SLNetworkServiceChangeName;
-
 @interface SLNetworkConst : NSObject
 
 @end

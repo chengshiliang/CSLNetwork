@@ -37,6 +37,16 @@
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"%@%@%@", @(self.requestMethod), self.requestUrl, [SLNetworkTool dictionaryToString:self.requestParams]];
+    NSMutableArray *requestParameterKeys = [self.requestParams.allKeys mutableCopy];
+    if (requestParameterKeys.count > 1) {
+        [requestParameterKeys sortedArrayUsingComparator:^NSComparisonResult(NSString * _Nonnull obj1, NSString * _Nonnull obj2) {
+            return [obj1 compare:obj2];
+        }];
+    }
+    NSMutableString *mString = [NSMutableString stringWithString:[NSString stringWithFormat:@"%@%@",@(self.requestMethod), self.requestUrl]];
+    [requestParameterKeys enumerateObjectsUsingBlock:^(NSString * _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
+        [mString appendFormat:@"&%@=%@",key, self.requestParams[key]];
+    }];
+    return [SLNetworkTool sl_md5String:mString];
 }
 @end

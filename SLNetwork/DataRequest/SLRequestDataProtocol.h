@@ -25,6 +25,7 @@ typedef NS_ENUM(NSInteger, SLRequestMethod) {
 - (NSString *)requestUrl;
 - (NSString *)requestBaseUrl;
 - (NSTimeInterval)requestTimeoutInterval;
+- (NSTimeInterval)cacheTimeInterval;
 @optional
 - (NSArray<SLUploadFile *> *)uploadFiles;
 - (BOOL)needCookie;

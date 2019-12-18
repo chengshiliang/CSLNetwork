@@ -9,7 +9,7 @@
 #import <SLNetwork/SLRequestSerialization.h>
 #import <SLNetwork/SLNetworkTool.h>
 #import <SLNetwork/SLNetworkConfig.h>
-
+#import <SLNetwork/SLNetworkCache.h>
 
 @interface SLNetworkManager()
 @property (nonatomic, assign) dispatch_semaphore_t semaphore;
@@ -46,18 +46,29 @@ static SLNetworkManager *sharedInstance;
     return self;
 }
 
-- (void)requestWithModel:(id<SLRequestDataProtocol>)model
-       completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
-    [self requestWithModel:model uploadProgress:nil completionHandler:completionHandle];
+- (NSNumber *)requestWithModel:(id<SLRequestDataProtocol>)model
+             completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
+    return [self requestWithModel:model uploadProgress:nil completionHandler:completionHandle];
 }
 
-- (void)requestWithModel:(id<SLRequestDataProtocol>)model
-          uploadProgress:(void(^)(NSProgress *uploadProgress))uploadProgressBlock
-       completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
+- (NSNumber *)requestWithModel:(id<SLRequestDataProtocol>)model
+                uploadProgress:(void(^)(NSProgress *uploadProgress))uploadProgressBlock
+             completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
+    if ([model cacheTimeInterval]>0) {
+        NSString *cacheKey = [model description];
+        SLNetworkCache *cache = [[SLCNetworkCacheManager sharedManager] objcetForKey:cacheKey];
+        if (!cache.isValid) {
+            [[SLCNetworkCacheManager sharedManager] removeObejectForKey:cacheKey];
+        } else {
+            !completionHandle ?:completionHandle(nil, cache.data, nil);
+            return @-1;
+        }
+    }
     NSMutableURLRequest *request = [sharedInstance.requestSerialization generateRequestWithModel:model];
-    if (!request) return;
+    if (!request) return @-1;
     __weak typeof (self)weakSelf = self;
     NSURLSessionDataTask *task;
+    NSMutableArray *taskIdentifier = [NSMutableArray arrayWithObject:@(-1)];
     if ([SLNetworkTool isUploadRequest:[model uploadFiles]]) {
         task = [self.sessionManager uploadTaskWithStreamedRequest:request
                                                          progress:uploadProgressBlock
@@ -66,6 +77,7 @@ static SLNetworkManager *sharedInstance;
             [strongSelf handleReponseResultWithModel:model
                                              reponse:response
                                       responseObject:responseObject
+                                      taskIdentifier:taskIdentifier.firstObject
                                                error:error
                                    completionHandler:completionHandle];
         }];
@@ -78,27 +90,36 @@ static SLNetworkManager *sharedInstance;
             [strongSelf handleReponseResultWithModel:model
                                              reponse:response
                                       responseObject:responseObject
+                                      taskIdentifier:taskIdentifier.firstObject
                                                error:error
                                    completionHandler:completionHandle];
         }];
     }
+    taskIdentifier[0] = @(task.taskIdentifier);
     dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
-    [self.requestInfo setObject:task forKey:[model description]];
+    [self.requestInfo setObject:task forKey:taskIdentifier[0]];
     dispatch_semaphore_signal(sharedInstance.semaphore);
     [task resume];
+    return @(task.taskIdentifier);
 }
 
 - (void)handleReponseResultWithModel:(id<SLRequestDataProtocol>)model
                              reponse:(NSURLResponse *)response
                       responseObject:(id)responseObject
+                      taskIdentifier:(NSNumber *)taskIdentifier
                                error:(NSError *)error
                    completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
     dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
-    [self.requestInfo removeObjectForKey:[model description]];
+    [self.requestInfo removeObjectForKey:taskIdentifier];
     dispatch_semaphore_signal(sharedInstance.semaphore);
     if ([[SLNetworkConfig share]handleResponseDataWithReponse:response
                                                responseObject:responseObject
                                                         error:error]) return;
+    if (!error) {
+        NSString *cacheKey = [model description];
+        SLNetworkCache *cache = [SLNetworkCache cacheWithData:responseObject validTimeInterval:[model cacheTimeInterval]];
+        [[SLCNetworkCacheManager sharedManager] setObjcet:cache forKey:cacheKey];
+    }
     !completionHandle ?: completionHandle(response, responseObject, error);
 }
 
@@ -111,14 +132,13 @@ static SLNetworkManager *sharedInstance;
     dispatch_semaphore_signal(sharedInstance.semaphore);
 }
 
-- (void)cancelTaskWithModel:(id<SLRequestDataProtocol>)model {
-    NSString *key = [model description];
-    if ([SLNetworkTool sl_networkEmptyString:key]) return;
-    NSURLSessionTask *task = self.requestInfo[key];
-    if (task) [task cancel];
+- (void)cancelTaskWithtaskIdentifier:(NSNumber *)taskIdentifier {
+    if ([taskIdentifier intValue] < 0) return;
     dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
-    if ([self.requestInfo.allKeys containsObject:key]) {
-        [self.requestInfo removeObjectForKey:key];
+    if ([self.requestInfo.allKeys containsObject:taskIdentifier]) {
+        NSURLSessionTask *task = self.requestInfo[taskIdentifier];
+        if (task) [task cancel];
+        [self.requestInfo removeObjectForKey:taskIdentifier];
     }
     dispatch_semaphore_signal(sharedInstance.semaphore);
 }
