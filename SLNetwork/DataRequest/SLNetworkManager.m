@@ -115,7 +115,7 @@ static SLNetworkManager *sharedInstance;
     if ([[SLNetworkConfig share]handleResponseDataWithReponse:response
                                                responseObject:responseObject
                                                         error:error]) return;
-    if (!error) {
+    if (!error && [model cacheTimeInterval]>0) {
         NSString *cacheKey = [model description];
         SLNetworkCache *cache = [SLNetworkCache cacheWithData:responseObject validTimeInterval:[model cacheTimeInterval]];
         [[SLCNetworkCacheManager sharedManager] setObjcet:cache forKey:cacheKey];
