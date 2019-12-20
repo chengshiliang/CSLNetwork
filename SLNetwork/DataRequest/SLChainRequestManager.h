@@ -1,8 +1,8 @@
 //
-//  SLRequestBase.h
-//  SLNetwork
+//  SLChainRequestManager.h
+//  AFNetworking
 //
-//  Created by 程石亮 on 2019/12/14.
+//  Created by SZDT00135 on 2019/12/20.
 //
 
 #import <Foundation/Foundation.h>
@@ -10,7 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface SLRequestBase : NSObject<SLRequestDataProtocol>
+@interface SLChainRequestManager : NSObject
+
 @end
 
 NS_ASSUME_NONNULL_END

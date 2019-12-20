@@ -28,14 +28,12 @@ typedef NS_ENUM(NSInteger, SLRequestMethod) {
 - (NSTimeInterval)requestTimeoutInterval;
 - (NSTimeInterval)cacheTimeInterval;
 - (BOOL)isProtectRequest;// 受保护的请求，不会清除缓存。例如首页数据
-- (BOOL)statusCodeValidator;// 有效code码
 /**
  NSURLSessionTaskPriorityHigh
  NSURLSessionTaskPriorityDefault
  NSURLSessionTaskPriorityLow
  */
 - (float)priority;// 网络访问优先级
-@property (nonatomic, strong) NSURLSessionTask *requestTask;
 @optional
 - (NSArray<SLUploadFile *> *)uploadFiles;
 - (BOOL)needCookie;

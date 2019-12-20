@@ -33,22 +33,24 @@ static SLNetworkManager *sharedInstance;
 }
 - (instancetype)init {
     if (self = [super init]) {
-        self.requestInfo = [NSMutableDictionary dictionary];
-        self.sessionManager = [AFHTTPSessionManager manager];
-        self.sessionManager.securityPolicy.validatesDomainName = NO;
-        self.sessionManager.securityPolicy.allowInvalidCertificates = YES;
-        self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-        NSMutableSet *acceptableContentTypes = [NSMutableSet setWithSet:self.sessionManager.responseSerializer.acceptableContentTypes];
+        sharedInstance.requestInfo = [NSMutableDictionary dictionary];
+        sharedInstance.sessionManager = [AFHTTPSessionManager manager];
+        sharedInstance.sessionManager.securityPolicy.validatesDomainName = NO;
+        sharedInstance.sessionManager.securityPolicy.allowInvalidCertificates = YES;
+        sharedInstance.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+        NSMutableSet *acceptableContentTypes = [NSMutableSet setWithSet:sharedInstance.sessionManager.responseSerializer.acceptableContentTypes];
         [acceptableContentTypes addObject:@"text/html"];
         [acceptableContentTypes addObject:@"text/plain"];
-        self.sessionManager.responseSerializer.acceptableContentTypes = [acceptableContentTypes copy];
+        sharedInstance.sessionManager.responseSerializer.acceptableContentTypes = [acceptableContentTypes copy];
     }
     return self;
 }
 
 - (NSNumber *)requestWithModel:(id<SLRequestDataProtocol>)model
              completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
-    return [self requestWithModel:model uploadProgress:nil completionHandler:completionHandle];
+    return [sharedInstance requestWithModel:model
+                             uploadProgress:nil
+                          completionHandler:completionHandle];
 }
 
 - (NSNumber *)requestWithModel:(id<SLRequestDataProtocol>)model
@@ -72,23 +74,23 @@ static SLNetworkManager *sharedInstance;
     if (!requestSerialize) {
         requestSerialize = [AFHTTPRequestSerializer serializer];
     }
-    self.sessionManager.requestSerializer = requestSerialize;
+    sharedInstance.sessionManager.requestSerializer = requestSerialize;
     AFHTTPResponseSerializer *responseSerializer = [model responseSerializer];
     if (responseSerializer) {
-        self.sessionManager.responseSerializer = responseSerializer;
+        sharedInstance.sessionManager.responseSerializer = responseSerializer;
     }
     NSMutableURLRequest *request = [model customRequest];
     if (!request) {
         request = [sharedInstance.requestSerialization generateRequestWithModel:model requestSerialize:requestSerialize];
     }
     if (!request) return @-1;
-    __weak typeof (self)weakSelf = self;
+    __weak typeof (sharedInstance)weakSelf = sharedInstance;
     NSURLSessionDataTask *task;
     NSMutableArray *taskIdentifier = [NSMutableArray arrayWithObject:@(-1)];
     if ([SLNetworkTool isUploadRequest:[model uploadFiles]]) {
-        task = [self.sessionManager uploadTaskWithStreamedRequest:request
-                                                         progress:uploadProgressBlock
-                                                completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        task = [sharedInstance.sessionManager uploadTaskWithStreamedRequest:request
+                                                                   progress:uploadProgressBlock
+                                                          completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
             __strong typeof (weakSelf)strongSelf = weakSelf;
             [strongSelf handleReponseResultWithModel:model
                                              reponse:response
@@ -98,10 +100,10 @@ static SLNetworkManager *sharedInstance;
                                    completionHandler:completionHandle];
         }];
     } else {
-        task = [self.sessionManager dataTaskWithRequest:request
-                                         uploadProgress:nil
-                                       downloadProgress:nil
-                                      completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        task = [sharedInstance.sessionManager dataTaskWithRequest:request
+                                                   uploadProgress:nil
+                                                 downloadProgress:nil
+                                                completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
             __strong typeof (weakSelf)strongSelf = weakSelf;
             [strongSelf handleReponseResultWithModel:model
                                              reponse:response
@@ -112,10 +114,9 @@ static SLNetworkManager *sharedInstance;
         }];
     }
     task.priority = [model priority];
-    model.requestTask = task;
     taskIdentifier[0] = @(task.taskIdentifier);
     dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
-    [self.requestInfo setObject:task forKey:taskIdentifier[0]];
+    [sharedInstance.requestInfo setObject:task forKey:taskIdentifier[0]];
     dispatch_semaphore_signal(sharedInstance.semaphore);
     [task resume];
     return @(task.taskIdentifier);
@@ -128,7 +129,7 @@ static SLNetworkManager *sharedInstance;
                                error:(NSError *)error
                    completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
     dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
-    [self.requestInfo removeObjectForKey:taskIdentifier];
+    [sharedInstance.requestInfo removeObjectForKey:taskIdentifier];
     if ([[SLNetworkConfig share]handleResponseDataWithReponse:response
                                                responseObject:responseObject
                                                         error:error]) {
@@ -146,27 +147,27 @@ static SLNetworkManager *sharedInstance;
 
 - (void)cancelAllTask {
     dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
-    for (NSURLSessionTask *task in self.requestInfo.allValues) {
+    for (NSURLSessionTask *task in sharedInstance.requestInfo.allValues) {
         [task cancel];
     }
-    [self.requestInfo removeAllObjects];
+    [sharedInstance.requestInfo removeAllObjects];
     dispatch_semaphore_signal(sharedInstance.semaphore);
 }
 
 - (void)cancelTaskWithtaskIdentifier:(NSNumber *)taskIdentifier {
     if ([taskIdentifier intValue] < 0) return;
     dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
-    if ([self.requestInfo.allKeys containsObject:taskIdentifier]) {
-        NSURLSessionTask *task = self.requestInfo[taskIdentifier];
+    if ([sharedInstance.requestInfo.allKeys containsObject:taskIdentifier]) {
+        NSURLSessionTask *task = sharedInstance.requestInfo[taskIdentifier];
         if (task) [task cancel];
-        [self.requestInfo removeObjectForKey:taskIdentifier];
+        [sharedInstance.requestInfo removeObjectForKey:taskIdentifier];
     }
     dispatch_semaphore_signal(sharedInstance.semaphore);
 }
 
 - (NSDictionary<NSNumber *,NSURLSessionTask *> *)requestTasks {
     dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
-    NSDictionary *dic = [self.requestInfo copy];
+    NSDictionary *dic = [sharedInstance.requestInfo copy];
     dispatch_semaphore_signal(sharedInstance.semaphore);
     return dic;
 }
