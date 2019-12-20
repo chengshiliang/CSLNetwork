@@ -9,23 +9,31 @@
 #import <SLNetwork/SLNetworkManager.h>
 
 @interface SLBatchRequestModel : NSObject
+@property (nonatomic, strong) NSNumber *taskId;
 @property (nonatomic, strong) id<SLRequestDataProtocol> model;
 @property (nonatomic, copy) void(^uploadProgressBlock)(NSProgress *uploadProgress);
 @property (nonatomic, copy) void(^completionHandle)(NSURLResponse *response,id responseObject,NSError *error, BOOL needHandle);
 @end
 
 @implementation SLBatchRequestModel
-
+- (NSNumber *)taskId {
+    if (!_taskId) {
+        return @-1;
+    }
+    return _taskId;
+}
 @end
 
 @interface SLBatchRequestManager()
-@property (nonatomic, strong) NSMutableArray *chainRequests;
+@property (nonatomic, strong) NSMutableArray *batchRequests;
+@property (nonatomic, strong) dispatch_group_t group;
 @end
 
 @implementation SLBatchRequestManager
 - (instancetype)init {
     if (self == [super init]) {
-        self.chainRequests = [NSMutableArray array];
+        self.batchRequests = [NSMutableArray array];
+        self.group = dispatch_group_create();
     }
     return self;
 }
@@ -45,22 +53,32 @@
     requestModel.model = model;
     requestModel.uploadProgressBlock = [uploadProgressBlock copy];
     requestModel.completionHandle = [completionHandle copy];
-    [self.chainRequests addObject:requestModel];
+    [self.batchRequests addObject:requestModel];
 }
 
 - (void)startRequest:(void(^)())completeBlock {
-    if (self.chainRequests.count <= 0) {
-        !completeBlock?:completeBlock();
-        return;
+    for (SLBatchRequestModel *requestModel in self.batchRequests) {
+        dispatch_group_enter(self.group);
+        __weak typeof (self)weakSelf = self;
+        NSNumber *taskId = [[SLNetworkManager share]requestWithModel:requestModel.model
+                                                      uploadProgress:requestModel.uploadProgressBlock
+                                                   completionHandler:^(NSURLResponse * _Nonnull response, id  _Nonnull responseObject, NSError * _Nonnull error, BOOL needHandle) {
+            __strong typeof (weakSelf)strongSelf = weakSelf;
+            !requestModel.completionHandle ?: requestModel.completionHandle(response, responseObject, error, needHandle);
+            dispatch_group_leave(strongSelf.group);
+        }];
+        requestModel.taskId = taskId;
     }
-    SLBatchRequestModel *requestModel = self.chainRequests[0];
-    __weak typeof (self)weakSelf = self;
-    [[SLNetworkManager share]requestWithModel:requestModel.model uploadProgress:requestModel.uploadProgressBlock completionHandler:^(NSURLResponse * _Nonnull response, id  _Nonnull responseObject, NSError * _Nonnull error, BOOL needHandle) {
-        __strong typeof (weakSelf)strongSelf = weakSelf;
-        !requestModel.completionHandle ?: requestModel.completionHandle(response, responseObject, error, needHandle);
-        [strongSelf.chainRequests removeObject:requestModel];
-        [strongSelf startRequest:completeBlock];
-    }];
+    dispatch_group_notify(self.group, dispatch_get_main_queue(), ^{
+        !completeBlock?:completeBlock();
+    });
 }
 
+- (NSArray *)batchRequestIds {
+    NSMutableArray *arrayM = [NSMutableArray arrayWithCapacity:self.batchRequests.count];
+    for (SLBatchRequestModel *requestModel in self.batchRequests) {
+        [arrayM addObject:requestModel.taskId];
+    }
+    return [arrayM copy];
+}
 @end

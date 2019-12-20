@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SLBatchRequestManager : NSObject
-
+@property (nonatomic, copy) NSArray *batchRequestIds;
 @end
 
 NS_ASSUME_NONNULL_END
