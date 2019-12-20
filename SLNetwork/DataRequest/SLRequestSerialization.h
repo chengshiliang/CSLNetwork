@@ -12,7 +12,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SLRequestSerialization : NSObject
-- (NSMutableURLRequest *)generateRequestWithModel:(id<SLRequestDataProtocol>)model;
+- (NSMutableURLRequest *)generateRequestWithModel:(id<SLRequestDataProtocol>)model requestSerialize:(AFHTTPRequestSerializer<AFURLRequestSerialization> *)requestSerialize;
 @end
 
 NS_ASSUME_NONNULL_END

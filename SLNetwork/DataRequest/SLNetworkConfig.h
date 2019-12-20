@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *baseUrl;
 @property (nonatomic, assign) long long diskCacheSize;
 - (void)addCommonRequestHeaderWithKey:(NSString *)key value:(id)value;
+- (void)removeCommonRequestHeaderKey:(NSString *)key;
 - (void)addCommonRequestHeaderWithParams:(NSDictionary *)params;
 - (NSDictionary *)commonHeader;
 

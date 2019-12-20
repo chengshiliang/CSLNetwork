@@ -13,6 +13,9 @@
 - (SLRequestMethod)requestMethod {
     return SLRequestGet;
 }
+- (NSHTTPURLResponse *)response {
+    return (NSHTTPURLResponse *)self.requestTask.response;
+}
 - (NSDictionary *)requestParams {
     return @{};
 }
@@ -38,7 +41,19 @@
 - (BOOL)needCookie {
     return NO;
 }
-
+- (BOOL)statusCodeValidator {
+    NSInteger code = self.response.statusCode;
+    return (code >= 200 && code <= 299);
+}
+- (NSURLSessionTask *)requestTask {
+    return self.currentTask;
+}
+- (void)setRequestTask:(NSURLSessionTask *)requestTask {
+    self.currentTask = requestTask;
+}
+- (float)priority {
+    return NSURLSessionTaskPriorityDefault;
+}
 - (NSString *)description {
     NSMutableArray *requestParameterKeys = [self.requestParams.allKeys mutableCopy];
     if (requestParameterKeys.count > 1) {

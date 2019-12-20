@@ -54,6 +54,7 @@ static SLNetworkManager *sharedInstance;
 - (NSNumber *)requestWithModel:(id<SLRequestDataProtocol>)model
                 uploadProgress:(void(^)(NSProgress *uploadProgress))uploadProgressBlock
              completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
+    if (!model || ![model conformsToProtocol:@protocol(SLRequestDataProtocol)]) return @-1;
     if ([model cacheTimeInterval]>0) {
         NSString *cacheKey = [model description];
         SLNetworkCache *cache = [[SLNetworkCacheManager sharedManager] cacheForKey:cacheKey];
@@ -67,7 +68,19 @@ static SLNetworkManager *sharedInstance;
             return @-1;
         }
     }
-    NSMutableURLRequest *request = [sharedInstance.requestSerialization generateRequestWithModel:model];
+    AFHTTPRequestSerializer *requestSerialize = [model requestSerializer];
+    if (!requestSerialize) {
+        requestSerialize = [AFHTTPRequestSerializer serializer];
+    }
+    self.sessionManager.requestSerializer = requestSerialize;
+    AFHTTPResponseSerializer *responseSerializer = [model responseSerializer];
+    if (responseSerializer) {
+        self.sessionManager.responseSerializer = responseSerializer;
+    }
+    NSMutableURLRequest *request = [model customRequest];
+    if (!request) {
+        request = [sharedInstance.requestSerialization generateRequestWithModel:model requestSerialize:requestSerialize];
+    }
     if (!request) return @-1;
     __weak typeof (self)weakSelf = self;
     NSURLSessionDataTask *task;
@@ -98,6 +111,8 @@ static SLNetworkManager *sharedInstance;
                                    completionHandler:completionHandle];
         }];
     }
+    task.priority = [model priority];
+    model.requestTask = task;
     taskIdentifier[0] = @(task.taskIdentifier);
     dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
     [self.requestInfo setObject:task forKey:taskIdentifier[0]];

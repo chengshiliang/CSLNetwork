@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SLRequestBase : NSObject<SLRequestDataProtocol>
-
+@property (nonatomic, strong) NSURLSessionTask *currentTask;
 @end
 
 NS_ASSUME_NONNULL_END

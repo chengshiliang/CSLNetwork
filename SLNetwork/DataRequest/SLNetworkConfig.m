@@ -30,6 +30,10 @@ static SLNetworkConfig *sharedInstance;
     if (!value) return;
     [sharedInstance.commonHeaders setValue:value forKey:key];
 }
+- (void)removeCommonRequestHeaderKey:(NSString *)key {
+    if ([SLNetworkTool sl_networkEmptyString:key]) return;
+    [sharedInstance.commonHeaders removeObjectForKey:key];
+}
 - (void)addCommonRequestHeaderWithParams:(NSDictionary *)params {
     if (!params) return;
     [sharedInstance.commonHeaders addEntriesFromDictionary:params];
