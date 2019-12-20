@@ -26,6 +26,7 @@ typedef NS_ENUM(NSInteger, SLRequestMethod) {
 - (NSString *)requestBaseUrl;
 - (NSTimeInterval)requestTimeoutInterval;
 - (NSTimeInterval)cacheTimeInterval;
+- (BOOL)isProtectRequest;// 受保护的请求，不会清除缓存。例如首页数据
 @optional
 - (NSArray<SLUploadFile *> *)uploadFiles;
 - (BOOL)needCookie;

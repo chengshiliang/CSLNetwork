@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)share;
 @property (nonatomic, copy) BOOL(^responseBlock)(NSURLResponse *response,id responseObject,NSError *error);
 @property (nonatomic, copy) NSString *baseUrl;
+@property (nonatomic, assign) long long diskCacheSize;
 - (void)addCommonRequestHeaderWithKey:(NSString *)key value:(id)value;
 - (void)addCommonRequestHeaderWithParams:(NSDictionary *)params;
 - (NSDictionary *)commonHeader;

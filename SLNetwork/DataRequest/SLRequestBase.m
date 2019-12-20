@@ -32,6 +32,9 @@
 - (NSArray<SLUploadFile *> *)uploadFiles {
     return @[];
 }
+- (BOOL)isProtectRequest {
+    return NO;
+}
 - (BOOL)needCookie {
     return NO;
 }

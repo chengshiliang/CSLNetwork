@@ -16,11 +16,12 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)isValid;
 @end
 
-@interface SLCNetworkCacheManager : NSObject
+@interface SLNetworkCacheManager : NSObject
 + (instancetype)sharedManager;
-- (void)removeObejectForKey:(id)key;
-- (void)setObjcet:(SLNetworkCache *)object forKey:(id)key;
-- (SLNetworkCache *)objcetForKey:(id)key;
+- (void)removeCacheForKey:(NSString *)key;
+- (void)setObjcet:(SLNetworkCache *)object forKey:(NSString *)key;
+- (SLNetworkCache *)cacheForKey:(NSString *)key;
+-(void)addProtectCacheKey:(NSString*)key;// 增加受保护的网络缓存key
 @end
 
 NS_ASSUME_NONNULL_END

@@ -56,10 +56,13 @@ static SLNetworkManager *sharedInstance;
              completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
     if ([model cacheTimeInterval]>0) {
         NSString *cacheKey = [model description];
-        SLNetworkCache *cache = [[SLCNetworkCacheManager sharedManager] objcetForKey:cacheKey];
-        if (!cache.isValid) {
-            [[SLCNetworkCacheManager sharedManager] removeObejectForKey:cacheKey];
+        SLNetworkCache *cache = [[SLNetworkCacheManager sharedManager] cacheForKey:cacheKey];
+        if (!cache || !cache.isValid) {
+            [[SLNetworkCacheManager sharedManager] removeCacheForKey:cacheKey];
         } else {
+            if ([[SLNetworkConfig share]handleResponseDataWithReponse:nil
+                                                       responseObject:cache.data
+                                                                error:nil]) return @-1;
             !completionHandle ?:completionHandle(nil, cache.data, nil);
             return @-1;
         }
@@ -118,7 +121,7 @@ static SLNetworkManager *sharedInstance;
     if (!error && [model cacheTimeInterval]>0) {
         NSString *cacheKey = [model description];
         SLNetworkCache *cache = [SLNetworkCache cacheWithData:responseObject validTimeInterval:[model cacheTimeInterval]];
-        [[SLCNetworkCacheManager sharedManager] setObjcet:cache forKey:cacheKey];
+        [[SLNetworkCacheManager sharedManager] setObjcet:cache forKey:cacheKey];
     }
     !completionHandle ?: completionHandle(response, responseObject, error);
 }
