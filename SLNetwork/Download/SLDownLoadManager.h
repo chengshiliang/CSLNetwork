@@ -64,7 +64,6 @@ typedef NS_ENUM(NSInteger, SLDownloadState) {
 - (void)cancelDownloadOfURL:(NSURL *)URL;
 - (void)cancelAllDownloads;
 
-- (void)deleteFile:(NSString *)fileName;
 - (void)deleteFileOfURL:(NSURL *)URL;
 - (void)deleteAllFiles;
 @end
