@@ -16,10 +16,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
 + (instancetype)share;
 - (NSNumber *)requestWithModel:(id<SLRequestDataProtocol>)model
-             completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle;
+             completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error, BOOL needHandle))completionHandle;
 - (NSNumber *)requestWithModel:(id<SLRequestDataProtocol>)model
                 uploadProgress:(void(^)(NSProgress *uploadProgress))uploadProgressBlock
-             completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle;
+             completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error, BOOL needHandle))completionHandle;
 - (void)cancelAllTask;
 - (void)cancelTaskWithtaskIdentifier:(NSNumber *)taskIdentifierl;
 @end

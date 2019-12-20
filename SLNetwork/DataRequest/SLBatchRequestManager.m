@@ -1,28 +1,28 @@
 //
-//  SLChainRequestManager.m
+//  SLBatchRequestManager.m
 //  AFNetworking
 //
 //  Created by SZDT00135 on 2019/12/20.
 //
 
-#import "SLChainRequestManager.h"
+#import "SLBatchRequestManager.h"
 #import <SLNetwork/SLNetworkManager.h>
 
-@interface SLChainRequestModel : NSObject
+@interface SLBatchRequestModel : NSObject
 @property (nonatomic, strong) id<SLRequestDataProtocol> model;
 @property (nonatomic, copy) void(^uploadProgressBlock)(NSProgress *uploadProgress);
-@property (nonatomic, copy) void(^completionHandle)(NSURLResponse *response,id responseObject,NSError *error);
+@property (nonatomic, copy) void(^completionHandle)(NSURLResponse *response,id responseObject,NSError *error, BOOL needHandle);
 @end
 
-@implementation SLChainRequestModel
+@implementation SLBatchRequestModel
 
 @end
 
-@interface SLChainRequestManager()
+@interface SLBatchRequestManager()
 @property (nonatomic, strong) NSMutableArray *chainRequests;
 @end
 
-@implementation SLChainRequestManager
+@implementation SLBatchRequestManager
 - (instancetype)init {
     if (self == [super init]) {
         self.chainRequests = [NSMutableArray array];
@@ -31,7 +31,7 @@
 }
 
 - (void)addRequestWithModel:(id<SLRequestDataProtocol>)model
-          completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
+          completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error, BOOL needHandle))completionHandle {
     [self addRequestWithModel:model
                uploadProgress:nil
             completionHandler:completionHandle];
@@ -39,9 +39,9 @@
 
 - (void)addRequestWithModel:(id<SLRequestDataProtocol>)model
              uploadProgress:(void(^)(NSProgress *uploadProgress))uploadProgressBlock
-          completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
+          completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error, BOOL needHandle))completionHandle {
     if (!model || ![model conformsToProtocol:@protocol(SLRequestDataProtocol)]) return;
-    SLChainRequestModel *requestModel = [SLChainRequestModel new];
+    SLBatchRequestModel *requestModel = [SLBatchRequestModel new];
     requestModel.model = model;
     requestModel.uploadProgressBlock = [uploadProgressBlock copy];
     requestModel.completionHandle = [completionHandle copy];
@@ -53,11 +53,11 @@
         !completeBlock?:completeBlock();
         return;
     }
-    SLChainRequestModel *requestModel = self.chainRequests[0];
+    SLBatchRequestModel *requestModel = self.chainRequests[0];
     __weak typeof (self)weakSelf = self;
-    [[SLNetworkManager share]requestWithModel:requestModel.model uploadProgress:requestModel.uploadProgressBlock completionHandler:^(NSURLResponse * _Nonnull response, id  _Nonnull responseObject, NSError * _Nonnull error) {
+    [[SLNetworkManager share]requestWithModel:requestModel.model uploadProgress:requestModel.uploadProgressBlock completionHandler:^(NSURLResponse * _Nonnull response, id  _Nonnull responseObject, NSError * _Nonnull error, BOOL needHandle) {
         __strong typeof (weakSelf)strongSelf = weakSelf;
-        !requestModel.completionHandle ?: requestModel.completionHandle(response, responseObject, error);
+        !requestModel.completionHandle ?: requestModel.completionHandle(response, responseObject, error, needHandle);
         [strongSelf.chainRequests removeObject:requestModel];
         [strongSelf startRequest:completeBlock];
     }];

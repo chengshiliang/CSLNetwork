@@ -1,5 +1,5 @@
 //
-//  SLChainRequestManager.h
+//  SLBatchRequestManager.h
 //  AFNetworking
 //
 //  Created by SZDT00135 on 2019/12/20.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface SLChainRequestManager : NSObject
+@interface SLBatchRequestManager : NSObject
 
 @end
 

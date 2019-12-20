@@ -47,7 +47,7 @@ static SLNetworkManager *sharedInstance;
 }
 
 - (NSNumber *)requestWithModel:(id<SLRequestDataProtocol>)model
-             completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
+             completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error, BOOL needHandle))completionHandle {
     return [sharedInstance requestWithModel:model
                              uploadProgress:nil
                           completionHandler:completionHandle];
@@ -55,7 +55,7 @@ static SLNetworkManager *sharedInstance;
 
 - (NSNumber *)requestWithModel:(id<SLRequestDataProtocol>)model
                 uploadProgress:(void(^)(NSProgress *uploadProgress))uploadProgressBlock
-             completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
+             completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error, BOOL needHandle))completionHandle {
     if (!model || ![model conformsToProtocol:@protocol(SLRequestDataProtocol)]) return @-1;
     if ([model cacheTimeInterval]>0) {
         NSString *cacheKey = [model description];
@@ -65,8 +65,11 @@ static SLNetworkManager *sharedInstance;
         } else {
             if ([[SLNetworkConfig share]handleResponseDataWithReponse:nil
                                                        responseObject:cache.data
-                                                                error:nil]) return @-1;
-            !completionHandle ?:completionHandle(nil, cache.data, nil);
+                                                                error:nil]) {
+                !completionHandle ?:completionHandle(nil, cache.data, nil, NO);
+                return @-1;
+            }
+            !completionHandle ?:completionHandle(nil, cache.data, nil, YES);
             return @-1;
         }
     }
@@ -127,13 +130,14 @@ static SLNetworkManager *sharedInstance;
                       responseObject:(id)responseObject
                       taskIdentifier:(NSNumber *)taskIdentifier
                                error:(NSError *)error
-                   completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
+                   completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error, BOOL needHandle))completionHandle {
     dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
     [sharedInstance.requestInfo removeObjectForKey:taskIdentifier];
     if ([[SLNetworkConfig share]handleResponseDataWithReponse:response
                                                responseObject:responseObject
                                                         error:error]) {
         dispatch_semaphore_signal(sharedInstance.semaphore);
+        !completionHandle ?: completionHandle(response, responseObject, error, YES);
         return;
     }
     if (!error && [model cacheTimeInterval]>0) {
@@ -141,8 +145,8 @@ static SLNetworkManager *sharedInstance;
         SLNetworkCache *cache = [SLNetworkCache cacheWithData:responseObject validTimeInterval:[model cacheTimeInterval]];
         [[SLNetworkCacheManager sharedManager] setObjcet:cache forKey:cacheKey];
     }
-    !completionHandle ?: completionHandle(response, responseObject, error);
     dispatch_semaphore_signal(sharedInstance.semaphore);
+    !completionHandle ?: completionHandle(response, responseObject, error, YES);
 }
 
 - (void)cancelAllTask {
