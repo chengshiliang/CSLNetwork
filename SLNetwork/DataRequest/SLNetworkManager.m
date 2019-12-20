@@ -114,23 +114,26 @@ static SLNetworkManager *sharedInstance;
                    completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error))completionHandle {
     dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
     [self.requestInfo removeObjectForKey:taskIdentifier];
-    dispatch_semaphore_signal(sharedInstance.semaphore);
     if ([[SLNetworkConfig share]handleResponseDataWithReponse:response
                                                responseObject:responseObject
-                                                        error:error]) return;
+                                                        error:error]) {
+        dispatch_semaphore_signal(sharedInstance.semaphore);
+        return;
+    }
     if (!error && [model cacheTimeInterval]>0) {
         NSString *cacheKey = [model description];
         SLNetworkCache *cache = [SLNetworkCache cacheWithData:responseObject validTimeInterval:[model cacheTimeInterval]];
         [[SLNetworkCacheManager sharedManager] setObjcet:cache forKey:cacheKey];
     }
     !completionHandle ?: completionHandle(response, responseObject, error);
+    dispatch_semaphore_signal(sharedInstance.semaphore);
 }
 
 - (void)cancelAllTask {
+    dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
     for (NSURLSessionTask *task in self.requestInfo.allValues) {
         [task cancel];
     }
-    dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
     [self.requestInfo removeAllObjects];
     dispatch_semaphore_signal(sharedInstance.semaphore);
 }
@@ -147,6 +150,9 @@ static SLNetworkManager *sharedInstance;
 }
 
 - (NSDictionary<NSNumber *,NSURLSessionTask *> *)requestTasks {
-    return [self.requestInfo copy];
+    dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
+    NSDictionary *dic = [self.requestInfo copy];
+    dispatch_semaphore_signal(sharedInstance.semaphore);
+    return dic;
 }
 @end
