@@ -10,9 +10,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 @interface PuaList : SLRequestBase
-@property (nonatomic, copy) NSDictionary *params;
-@end
 
+@end
+@interface PuaHandle : SLRequestBase
+
+@end
 @interface PuaModel : SLRequestBase
 
 @end

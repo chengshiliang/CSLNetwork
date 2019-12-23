@@ -14,10 +14,13 @@
     return SLRequestGet;
 }
 - (NSDictionary *)requestParams {
-    return @{};
+    return self.params;
 }
 - (NSDictionary *)requestHead {
     return @{};
+}
+- (NSTimeInterval)cacheTimeInterval {
+    return 60*60;
 }
 - (NSString *)requestUrl {
     return @"";

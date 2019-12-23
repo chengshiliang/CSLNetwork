@@ -17,10 +17,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     PuaList *model = [PuaList new];
-    model.params = @{};
+    model.params = @{@"mail": @"shiliangcheng@hk01.com", @"page": @(1)};
     [[SLNetworkManager share]requestWithModel:model completionHandler:^(NSURLResponse * _Nonnull response, id  _Nonnull responseObject, NSError * _Nonnull error, BOOL needHandle) {
         NSLog(@"responseObject %@", responseObject);
-        NSLog(@"response %@", response);
+        NSLog(@"error %@", error);
+    }];
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    PuaHandle *model = [PuaHandle new];
+    model.params = @{@"state": @(1)};
+    [[SLNetworkManager share]requestWithModel:model completionHandler:^(NSURLResponse * _Nonnull response, id  _Nonnull responseObject, NSError * _Nonnull error, BOOL needHandle) {
+        NSLog(@"responseObject %@", responseObject);
         NSLog(@"error %@", error);
     }];
 }

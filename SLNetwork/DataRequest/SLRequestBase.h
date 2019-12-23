@@ -11,6 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SLRequestBase : NSObject<SLRequestDataProtocol>
+@property (nonatomic, copy) NSDictionary *params;
 @end
 
 NS_ASSUME_NONNULL_END

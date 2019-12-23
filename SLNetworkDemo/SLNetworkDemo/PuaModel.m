@@ -17,11 +17,18 @@
 - (NSString *)requestUrl {
     return @"puas";
 }
-- (NSDictionary *)requestParams {
-    return self.params;
+@end
+@implementation PuaHandle
+- (SLRequestMethod)requestMethod {
+    return SLRequestPatch;
+}
+- (NSString *)requestUrl {
+    return @"pua/1157193/state";
+}
+- (NSTimeInterval)cacheTimeInterval {
+    return 0;
 }
 @end
-
 @implementation PuaModel
 
 @end
