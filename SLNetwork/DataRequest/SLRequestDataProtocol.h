@@ -36,7 +36,6 @@ typedef NS_ENUM(NSInteger, SLRequestMethod) {
 - (float)priority;// 网络访问优先级
 @optional
 - (NSArray<SLUploadFile *> *)uploadFiles;
-- (BOOL)needCookie;
 - (AFHTTPRequestSerializer<AFURLRequestSerialization> *)requestSerializer;
 - (AFHTTPResponseSerializer <AFURLResponseSerialization> *)responseSerializer;
 - (NSMutableURLRequest *)customRequest;// 自定义请求

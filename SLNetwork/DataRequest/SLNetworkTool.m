@@ -36,11 +36,11 @@
     return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 + (NSString *)realUrlString:(id<SLRequestDataProtocol>)model {
-    if (!model) return @"";
+    if (!model || ![model conformsToProtocol:@protocol(SLRequestDataProtocol)]) return @"";
     NSString *urlString = [model requestUrl];
     if ([self sl_networkEmptyString:urlString]) return @"";
     if ([urlString hasPrefix:@"http"]) return urlString;
-    return [NSString stringWithFormat:@"%@%@", [model requestBaseUrl], urlString];
+    return [NSString stringWithFormat:@"%@/%@", [model requestBaseUrl], urlString];
 }
 + (NSString *)requestMethodFromMethodType:(SLRequestMethod)method {
     switch (method) {

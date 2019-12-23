@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-
+#import "PuaModel.h"
 @interface ViewController ()
 
 @end
@@ -16,7 +16,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    PuaList *model = [PuaList new];
+    model.params = @{};
+    [[SLNetworkManager share]requestWithModel:model completionHandler:^(NSURLResponse * _Nonnull response, id  _Nonnull responseObject, NSError * _Nonnull error, BOOL needHandle) {
+        NSLog(@"responseObject %@", responseObject);
+        NSLog(@"response %@", response);
+        NSLog(@"error %@", error);
+    }];
 }
 
 

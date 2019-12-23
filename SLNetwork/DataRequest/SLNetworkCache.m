@@ -71,34 +71,36 @@ static SLNetworkCacheManager *sharedManager;
 + (instancetype)sharedManager {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedManager = [[super allocWithZone:NULL] init];
-        sharedManager.cache = [NSCache new];
-        sharedManager.cache.totalCostLimit = 1024 * 1024 * 5;
-        sharedManager.maxDiskSize = [SLNetworkConfig share].diskCacheSize > 0 ? [SLNetworkConfig share].diskCacheSize : 1024 * 1024 * 20;
-        sharedManager.protectCacheKeys = [NSMutableSet set];
-        sharedManager.networkQueue = dispatch_queue_create("com.sl.network", DISPATCH_QUEUE_CONCURRENT);
-        
-        NSFileManager *filemanager = [NSFileManager defaultManager];
-        NSString *path = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
-        sharedManager.cachePath = [path stringByAppendingPathComponent:@"slnetwork"];
-        BOOL isDir;
-        if (![filemanager fileExistsAtPath:sharedManager.cachePath isDirectory:&isDir]){
-            [sharedManager creatCacheFile];
-        }else{
-            if (!isDir) {
-                NSError *error = nil;
-                [filemanager removeItemAtPath:sharedManager.cachePath error:&error];
-                [sharedManager creatCacheFile];
-            }
-        }
-        [[NSNotificationCenter defaultCenter] addObserver:sharedManager selector:@selector(removeAllObjects) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:sharedManager selector:@selector(backgroundCleanDisk) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        sharedManager = [[self alloc] init];
     });
     return sharedManager;
 }
 
-+ (instancetype)allocWithZone:(struct _NSZone *)zone {
-    return [self sharedManager];
+- (instancetype)init {
+    if (self == [super init]) {
+        self.cache = [NSCache new];
+        self.cache.totalCostLimit = 1024 * 1024 * 5;
+        self.maxDiskSize = [SLNetworkConfig share].diskCacheSize > 0 ? [SLNetworkConfig share].diskCacheSize : 1024 * 1024 * 20;
+        self.protectCacheKeys = [NSMutableSet set];
+        self.networkQueue = dispatch_queue_create("com.sl.network", DISPATCH_QUEUE_CONCURRENT);
+        
+        NSFileManager *filemanager = [NSFileManager defaultManager];
+        NSString *path = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
+        self.cachePath = [path stringByAppendingPathComponent:@"slnetwork"];
+        BOOL isDir;
+        if (![filemanager fileExistsAtPath:sharedManager.cachePath isDirectory:&isDir]){
+            [self creatCacheFile];
+        }else{
+            if (!isDir) {
+                NSError *error = nil;
+                [filemanager removeItemAtPath:sharedManager.cachePath error:&error];
+                [self creatCacheFile];
+            }
+        }
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeAllObjects) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backgroundCleanDisk) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    }
+    return self;
 }
 
 - (void)creatCacheFile{

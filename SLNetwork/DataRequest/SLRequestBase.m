@@ -35,11 +35,17 @@
 - (BOOL)isProtectRequest {
     return NO;
 }
-- (BOOL)needCookie {
-    return NO;
-}
 - (float)priority {
     return NSURLSessionTaskPriorityDefault;
+}
+- (AFHTTPRequestSerializer<AFURLRequestSerialization> *)requestSerializer {
+    return nil;
+}
+- (AFHTTPResponseSerializer <AFURLResponseSerialization> *)responseSerializer {
+    return nil;
+}
+- (NSMutableURLRequest *)customRequest {
+    return nil;
 }
 - (NSString *)description {
     NSMutableArray *requestParameterKeys = [self.requestParams.allKeys mutableCopy];

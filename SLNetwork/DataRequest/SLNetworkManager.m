@@ -12,7 +12,7 @@
 #import <SLNetwork/SLNetworkCache.h>
 
 @interface SLNetworkManager()
-@property (nonatomic, assign) dispatch_semaphore_t semaphore;
+@property (nonatomic, strong) dispatch_semaphore_t semaphore;
 @property (nonatomic, strong) SLRequestSerialization *requestSerialization;
 @property (nonatomic, strong) NSMutableDictionary<NSNumber *, NSURLSessionTask *> *requestInfo;
 @end
@@ -22,26 +22,24 @@ static SLNetworkManager *sharedInstance;
 + (instancetype)share {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[super allocWithZone:NULL] init];
-        sharedInstance.semaphore = dispatch_semaphore_create(1);
-        sharedInstance.requestSerialization = [[SLRequestSerialization alloc]init];
+        sharedInstance = [[self alloc] init];
     });
     return sharedInstance;
 }
-+ (instancetype)allocWithZone:(struct _NSZone *)zone {
-    return [self share];
-}
+
 - (instancetype)init {
-    if (self = [super init]) {
-        sharedInstance.requestInfo = [NSMutableDictionary dictionary];
-        sharedInstance.sessionManager = [AFHTTPSessionManager manager];
-        sharedInstance.sessionManager.securityPolicy.validatesDomainName = NO;
-        sharedInstance.sessionManager.securityPolicy.allowInvalidCertificates = YES;
-        sharedInstance.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
-        NSMutableSet *acceptableContentTypes = [NSMutableSet setWithSet:sharedInstance.sessionManager.responseSerializer.acceptableContentTypes];
+    if (self == [super init]) {
+        self.semaphore = dispatch_semaphore_create(1);
+        self.requestSerialization = [[SLRequestSerialization alloc]init];
+        self.requestInfo = [NSMutableDictionary dictionary];
+        self.sessionManager = [AFHTTPSessionManager manager];
+        self.sessionManager.securityPolicy.validatesDomainName = NO;
+        self.sessionManager.securityPolicy.allowInvalidCertificates = YES;
+        self.sessionManager.responseSerializer = [AFJSONResponseSerializer serializer];
+        NSMutableSet *acceptableContentTypes = [NSMutableSet setWithSet:self.sessionManager.responseSerializer.acceptableContentTypes];
         [acceptableContentTypes addObject:@"text/html"];
         [acceptableContentTypes addObject:@"text/plain"];
-        sharedInstance.sessionManager.responseSerializer.acceptableContentTypes = [acceptableContentTypes copy];
+        self.sessionManager.responseSerializer.acceptableContentTypes = [acceptableContentTypes copy];
     }
     return self;
 }

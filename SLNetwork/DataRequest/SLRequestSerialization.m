@@ -15,7 +15,7 @@
 @end
 
 @implementation SLRequestSerialization
-- (NSMutableURLRequest *)generateRequestWithModel:(id<SLRequestDataProtocol>)model requestSerialize:(AFHTTPRequestSerializer<AFURLRequestSerialization> *)requestSerialize{ 
+- (NSMutableURLRequest *)generateRequestWithModel:(id<SLRequestDataProtocol>)model requestSerialize:(AFHTTPRequestSerializer<AFURLRequestSerialization> *)requestSerialize{
     NSString *urlString = [SLNetworkTool realUrlString:model];
     if ([SLNetworkTool sl_networkEmptyString:urlString]) return nil;
     NSArray<SLUploadFile *> *uploadFiles = [model uploadFiles];

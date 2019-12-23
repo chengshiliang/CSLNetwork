@@ -17,13 +17,10 @@ static SLNetworkConfig *sharedInstance;
 + (instancetype)share {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [[super allocWithZone:NULL] init];
+        sharedInstance = [[self alloc] init];
         sharedInstance.commonHeaders = [NSMutableDictionary dictionary];
     });
     return sharedInstance;
-}
-+ (instancetype)allocWithZone:(struct _NSZone *)zone {
-    return [self share];
 }
 - (void)addCommonRequestHeaderWithKey:(NSString *)key value:(id)value {
     if ([SLNetworkTool sl_networkEmptyString:key]) return;
