@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "PuaModel.h"
+#import "SecondViewController.h"
 @interface ViewController ()
 
 @end
@@ -25,6 +26,9 @@
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    SecondViewController *vc = [SecondViewController new];
+    [self presentViewController:vc animated:YES completion:nil];
+    return;
     PuaHandle *model = [PuaHandle new];
     model.params = @{@"state": @(1)};
     [[SLNetworkManager share]requestWithModel:model completionHandler:^(NSURLResponse * _Nonnull response, id  _Nonnull responseObject, NSError * _Nonnull error, BOOL needHandle) {

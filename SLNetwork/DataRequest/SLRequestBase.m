@@ -20,7 +20,7 @@
     return @{};
 }
 - (NSTimeInterval)cacheTimeInterval {
-    return 60*60;
+    return 0;
 }
 - (NSString *)requestUrl {
     return @"";

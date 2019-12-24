@@ -135,7 +135,7 @@ static SLNetworkManager *sharedInstance;
                                                responseObject:responseObject
                                                         error:error]) {
         dispatch_semaphore_signal(sharedInstance.semaphore);
-        !completionHandle ?: completionHandle(response, responseObject, error, YES);
+        !completionHandle ?: completionHandle(response, responseObject, error, NO);
         return;
     }
     if (!error && [model cacheTimeInterval]>0) {

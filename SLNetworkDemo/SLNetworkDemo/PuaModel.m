@@ -25,8 +25,21 @@
 - (NSString *)requestUrl {
     return @"pua/1157193/state";
 }
-- (NSTimeInterval)cacheTimeInterval {
-    return 0;
+@end
+@implementation PuaPermissionModify
+- (SLRequestMethod)requestMethod {
+    return SLRequestPost;
+}
+- (NSString *)requestUrl {
+    return @"permission/1157193";
+}
+@end
+@implementation PuaAudit
+- (SLRequestMethod)requestMethod {
+    return SLRequestPost;
+}
+- (NSString *)requestUrl {
+    return @"entity_ca/134/audits";
 }
 @end
 @implementation PuaModel

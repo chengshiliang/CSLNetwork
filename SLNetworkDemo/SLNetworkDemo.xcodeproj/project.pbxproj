@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1516840623B060BB00222072 /* PuaModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1516840523B060BB00222072 /* PuaModel.m */; };
+		1516840923B0963400222072 /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1516840823B0963400222072 /* SecondViewController.m */; };
 		5247B855A38B6907DF5FEAA6 /* libPods-SLNetworkDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9CC9A10C185F010D6F53C3D /* libPods-SLNetworkDemo.a */; };
 		6C2FD388239FCD6000CA229B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C2FD387239FCD6000CA229B /* AppDelegate.m */; };
 		6C2FD38B239FCD6000CA229B /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C2FD38A239FCD6000CA229B /* SceneDelegate.m */; };
@@ -22,6 +23,8 @@
 		1516840323B059B000222072 /* SLNetworkDemoPrefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLNetworkDemoPrefix.pch; sourceTree = "<group>"; };
 		1516840423B060BB00222072 /* PuaModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PuaModel.h; sourceTree = "<group>"; };
 		1516840523B060BB00222072 /* PuaModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PuaModel.m; sourceTree = "<group>"; };
+		1516840723B0963400222072 /* SecondViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SecondViewController.h; sourceTree = "<group>"; };
+		1516840823B0963400222072 /* SecondViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
 		5D631B26EB79A909AD1052A3 /* Pods-SLNetworkDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SLNetworkDemo.debug.xcconfig"; path = "Target Support Files/Pods-SLNetworkDemo/Pods-SLNetworkDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		6C2FD383239FCD6000CA229B /* SLNetworkDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SLNetworkDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C2FD386239FCD6000CA229B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -78,6 +81,8 @@
 				6C2FD38A239FCD6000CA229B /* SceneDelegate.m */,
 				6C2FD38C239FCD6000CA229B /* ViewController.h */,
 				6C2FD38D239FCD6000CA229B /* ViewController.m */,
+				1516840723B0963400222072 /* SecondViewController.h */,
+				1516840823B0963400222072 /* SecondViewController.m */,
 				1516840423B060BB00222072 /* PuaModel.h */,
 				1516840523B060BB00222072 /* PuaModel.m */,
 				6C2FD38F239FCD6000CA229B /* Main.storyboard */,
@@ -203,6 +208,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1516840923B0963400222072 /* SecondViewController.m in Sources */,
 				6C2FD38E239FCD6000CA229B /* ViewController.m in Sources */,
 				6C2FD388239FCD6000CA229B /* AppDelegate.m in Sources */,
 				1516840623B060BB00222072 /* PuaModel.m in Sources */,

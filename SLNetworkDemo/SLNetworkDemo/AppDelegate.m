@@ -22,6 +22,7 @@
             NSInteger statusCode = httpResponse.statusCode;
             if (statusCode == 401) {
                 NSLog(@"需要登录，跳转到登录页进行处理");
+                [[SLNetworkManager share]cancelAllTask];
                 return YES;
             }
         }
