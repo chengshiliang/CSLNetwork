@@ -23,7 +23,7 @@
     return 0;
 }
 - (NSString *)requestUrl {
-    return @"";
+    return self.url;
 }
 - (NSString *)requestBaseUrl {
     return [SLNetworkConfig share].baseUrl;
@@ -48,6 +48,9 @@
     return nil;
 }
 - (NSMutableURLRequest *)customRequest {
+    return nil;
+}
+- (NSString *)acceptContentTypes {
     return nil;
 }
 - (BOOL)allowsCellularAccess {

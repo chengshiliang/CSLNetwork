@@ -20,7 +20,22 @@
     [model setParams:@{@"pass": @(true), @"memo": @"发发发"}];
     [[SLNetworkManager share]requestWithModel:model completionHandler:^(NSURLResponse * _Nonnull response, id  _Nonnull responseObject, NSError * _Nonnull error, BOOL needHandle) {
         NSLog(@"responseObject %@", responseObject);
-        NSLog(@"errorm %@", error);
+        NSLog(@"error %@", error);
+    }];
+    
+    UIButton *button = [[UIButton alloc]initWithFrame:CGRectMake(20, 100, 200, 50)];
+    [self.view addSubview:button];
+    [button setTitle:@"上传图片" forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(uploadFile) forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)uploadFile {
+    PuaUpload *model = [PuaUpload new];
+    [[SLNetworkManager share]requestWithModel:model uploadProgress:^(NSProgress * _Nonnull uploadProgress) {
+        NSLog(@"uploadProgress %@\n%@", @(uploadProgress.totalUnitCount), @(uploadProgress.completedUnitCount));
+    } completionHandler:^(NSURLResponse * _Nonnull response, id  _Nonnull responseObject, NSError * _Nonnull error, BOOL needHandle) {
+        NSLog(@"responseObject %@", responseObject);
+        NSLog(@"error %@", error);
     }];
 }
 

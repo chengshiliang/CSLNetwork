@@ -67,9 +67,9 @@
     if (!components) return @"";
     if (components.count == 1) {
         fileName = [fileName stringByAppendingString:@".png"];
-        return @"png";
+        return @"image/png";
     }
-    return [components lastObject];
+    return [@"image/" stringByAppendingString:[components lastObject]];
 }
 + (NSString *)sl_md5String:(NSString *)string{
     const char *cStr = [string UTF8String];

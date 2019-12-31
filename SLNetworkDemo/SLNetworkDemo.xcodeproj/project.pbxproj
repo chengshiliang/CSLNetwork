@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		1516840623B060BB00222072 /* PuaModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1516840523B060BB00222072 /* PuaModel.m */; };
 		1516840923B0963400222072 /* SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1516840823B0963400222072 /* SecondViewController.m */; };
+		159BFF5323BB3CA40056BDCD /* cir2.png in Resources */ = {isa = PBXBuildFile; fileRef = 159BFF4F23BB3CA40056BDCD /* cir2.png */; };
+		159BFF5423BB3CA40056BDCD /* cir1.png in Resources */ = {isa = PBXBuildFile; fileRef = 159BFF5023BB3CA40056BDCD /* cir1.png */; };
+		159BFF5523BB3CA40056BDCD /* cir0.png in Resources */ = {isa = PBXBuildFile; fileRef = 159BFF5123BB3CA40056BDCD /* cir0.png */; };
+		159BFF5623BB3CA40056BDCD /* cir3.png in Resources */ = {isa = PBXBuildFile; fileRef = 159BFF5223BB3CA40056BDCD /* cir3.png */; };
 		5247B855A38B6907DF5FEAA6 /* libPods-SLNetworkDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9CC9A10C185F010D6F53C3D /* libPods-SLNetworkDemo.a */; };
 		6C2FD388239FCD6000CA229B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C2FD387239FCD6000CA229B /* AppDelegate.m */; };
 		6C2FD38B239FCD6000CA229B /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C2FD38A239FCD6000CA229B /* SceneDelegate.m */; };
@@ -25,6 +29,10 @@
 		1516840523B060BB00222072 /* PuaModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PuaModel.m; sourceTree = "<group>"; };
 		1516840723B0963400222072 /* SecondViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SecondViewController.h; sourceTree = "<group>"; };
 		1516840823B0963400222072 /* SecondViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SecondViewController.m; sourceTree = "<group>"; };
+		159BFF4F23BB3CA40056BDCD /* cir2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cir2.png; sourceTree = "<group>"; };
+		159BFF5023BB3CA40056BDCD /* cir1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cir1.png; sourceTree = "<group>"; };
+		159BFF5123BB3CA40056BDCD /* cir0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cir0.png; sourceTree = "<group>"; };
+		159BFF5223BB3CA40056BDCD /* cir3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cir3.png; sourceTree = "<group>"; };
 		5D631B26EB79A909AD1052A3 /* Pods-SLNetworkDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SLNetworkDemo.debug.xcconfig"; path = "Target Support Files/Pods-SLNetworkDemo/Pods-SLNetworkDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		6C2FD383239FCD6000CA229B /* SLNetworkDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SLNetworkDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C2FD386239FCD6000CA229B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -91,6 +99,10 @@
 				6C2FD397239FCD6600CA229B /* Info.plist */,
 				6C2FD398239FCD6600CA229B /* main.m */,
 				1516840323B059B000222072 /* SLNetworkDemoPrefix.pch */,
+				159BFF5123BB3CA40056BDCD /* cir0.png */,
+				159BFF5023BB3CA40056BDCD /* cir1.png */,
+				159BFF4F23BB3CA40056BDCD /* cir2.png */,
+				159BFF5223BB3CA40056BDCD /* cir3.png */,
 			);
 			path = SLNetworkDemo;
 			sourceTree = "<group>";
@@ -171,8 +183,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				6C2FD396239FCD6600CA229B /* LaunchScreen.storyboard in Resources */,
+				159BFF5623BB3CA40056BDCD /* cir3.png in Resources */,
+				159BFF5423BB3CA40056BDCD /* cir1.png in Resources */,
 				6C2FD393239FCD6600CA229B /* Assets.xcassets in Resources */,
 				6C2FD391239FCD6000CA229B /* Main.storyboard in Resources */,
+				159BFF5323BB3CA40056BDCD /* cir2.png in Resources */,
+				159BFF5523BB3CA40056BDCD /* cir0.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -366,6 +382,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.csl.SLNetworkDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -389,6 +406,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.csl.SLNetworkDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";

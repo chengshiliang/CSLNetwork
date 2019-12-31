@@ -80,6 +80,12 @@ static NSString *SLNetworkResponseValidateError = @"SLNetworkResponseValidateErr
     if (responseSerializer) {
         sharedInstance.sessionManager.responseSerializer = responseSerializer;
     }
+    NSString *contentTypes = [model acceptContentTypes];
+    if (![SLNetworkTool sl_networkEmptyString:contentTypes]) {
+        NSMutableSet *acceptableContentTypes = [NSMutableSet setWithSet:sharedInstance.sessionManager.responseSerializer.acceptableContentTypes];
+        [acceptableContentTypes addObject:contentTypes];
+        sharedInstance.sessionManager.responseSerializer.acceptableContentTypes = [acceptableContentTypes copy];
+    }
     NSMutableURLRequest *request = [model customRequest];
     if (!request) {
         request = [sharedInstance.requestSerialization generateRequestWithModel:model requestSerialize:requestSerialize];
@@ -130,19 +136,26 @@ static NSString *SLNetworkResponseValidateError = @"SLNetworkResponseValidateErr
                       taskIdentifier:(NSNumber *)taskIdentifier
                                error:(NSError *)error
                    completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error, BOOL needHandle))completionHandle {
+    if (![sharedInstance.requestInfo.allKeys containsObject:taskIdentifier]) return;
     dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
     [sharedInstance.requestInfo removeObjectForKey:taskIdentifier];
+    if ([[SLNetworkConfig share]handleResponseDataWithReponse:response
+                                               responseObject:responseObject
+                                                        error:error]) {
+        NSError *validateError = nil;
+        if (![sharedInstance validateResult:model response:(NSHTTPURLResponse *)response responseObject:responseObject error:&validateError]) {
+            dispatch_semaphore_signal(sharedInstance.semaphore);
+            !completionHandle ?: completionHandle(nil, nil, validateError, NO);
+            return;
+        }
+        dispatch_semaphore_signal(sharedInstance.semaphore);
+        !completionHandle ?: completionHandle(response, responseObject, error, NO);
+        return;
+    }
     NSError *validateError = nil;
     if (![sharedInstance validateResult:model response:(NSHTTPURLResponse *)response responseObject:responseObject error:&validateError]) {
         dispatch_semaphore_signal(sharedInstance.semaphore);
         !completionHandle ?: completionHandle(nil, nil, validateError, NO);
-        return;
-    }
-    if ([[SLNetworkConfig share]handleResponseDataWithReponse:response
-                                               responseObject:responseObject
-                                                        error:error]) {
-        dispatch_semaphore_signal(sharedInstance.semaphore);
-        !completionHandle ?: completionHandle(response, responseObject, error, NO);
         return;
     }
     if (!error && [model cacheTimeInterval]>0) {
@@ -182,6 +195,7 @@ static NSString *SLNetworkResponseValidateError = @"SLNetworkResponseValidateErr
     }
     [sharedInstance.requestInfo removeAllObjects];
     dispatch_semaphore_signal(sharedInstance.semaphore);
+    NSLog(@"cancel all task done");
 }
 
 - (void)cancelTaskWithtaskIdentifier:(NSNumber *)taskIdentifier {

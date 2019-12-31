@@ -50,6 +50,7 @@ static int cacheTimeInterval = 60*60*24;
             _validTimeInterval = [aDecoder decodeIntegerForKey:@"validTimeInterval"];
             _cacheTime = [aDecoder decodeDoubleForKey:@"cacheTime"];
             _data = [aDecoder decodeObjectForKey:@"data"];
+            _version = [aDecoder decodeObjectForKey:@"version"];
         }
     }
     return self;
@@ -59,6 +60,7 @@ static int cacheTimeInterval = 60*60*24;
     [aCoder encodeObject:_data forKey:@"data"];
     [aCoder encodeDouble:_cacheTime forKey:@"cacheTime"];
     [aCoder encodeInteger:_validTimeInterval forKey:@"validTimeInterval"];
+    [aCoder encodeObject:_version forKey:@"version"];
 }
 @end
 
@@ -92,12 +94,12 @@ static SLNetworkCacheManager *sharedManager;
         NSString *path = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];
         self.cachePath = [path stringByAppendingPathComponent:@"slnetwork"];
         BOOL isDir;
-        if (![filemanager fileExistsAtPath:sharedManager.cachePath isDirectory:&isDir]){
+        if (![filemanager fileExistsAtPath:self.cachePath isDirectory:&isDir]){
             [self creatCacheFile];
         }else{
             if (!isDir) {
                 NSError *error = nil;
-                [filemanager removeItemAtPath:sharedManager.cachePath error:&error];
+                [filemanager removeItemAtPath:self.cachePath error:&error];
                 [self creatCacheFile];
             }
         }
@@ -109,9 +111,9 @@ static SLNetworkCacheManager *sharedManager;
 
 - (void)creatCacheFile{
     NSError *error = nil;
-    BOOL created = [[NSFileManager defaultManager] createDirectoryAtPath:sharedManager.cachePath withIntermediateDirectories:YES attributes:nil error:&error];
+    BOOL created = [[NSFileManager defaultManager] createDirectoryAtPath:self.cachePath withIntermediateDirectories:YES attributes:nil error:&error];
     if (created) {
-        NSURL *url = [NSURL fileURLWithPath:sharedManager.cachePath];
+        NSURL *url = [NSURL fileURLWithPath:self.cachePath];
         [url setResourceValue:[NSNumber numberWithBool:YES] forKey:NSURLIsExcludedFromBackupKey error:&error];//避免缓存数据 被备份到iclouds
     }
 }

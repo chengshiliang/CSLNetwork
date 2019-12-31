@@ -9,6 +9,9 @@
 #import "SLRequestBase.h"
 
 NS_ASSUME_NONNULL_BEGIN
+@interface PuaUpload : SLRequestBase
+
+@end
 @interface PuaList : SLRequestBase
 
 @end

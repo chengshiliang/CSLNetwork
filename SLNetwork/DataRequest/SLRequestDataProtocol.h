@@ -38,6 +38,7 @@ typedef NS_ENUM(NSInteger, SLRequestMethod) {
 - (BOOL)statusCodeValidator:(NSHTTPURLResponse *)response;
 @optional
 - (NSArray<SLUploadFile *> *)uploadFiles;
+- (NSString *)acceptContentTypes;
 - (BOOL)allowsCellularAccess;
 - (AFHTTPRequestSerializer<AFURLRequestSerialization> *)requestSerializer;
 - (AFHTTPResponseSerializer <AFURLResponseSerialization> *)responseSerializer;

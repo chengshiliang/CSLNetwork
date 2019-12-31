@@ -23,7 +23,7 @@
 - (instancetype)initFileName:(NSString *)name fileData:(nonnull NSData *)fileData {
     if (self == [super init]) {
         self.mimeType = [SLNetworkTool fileTypeFromFileName:name];
-        if ([SLNetworkTool sl_networkEmptyString:self.mimeType]) return nil;
+        if ([SLNetworkTool sl_networkEmptyString:self.mimeType]) return self;
         self.fileName = name;
         self.name = [SLNetworkTool sl_md5String:name];
         self.fileData = fileData;
