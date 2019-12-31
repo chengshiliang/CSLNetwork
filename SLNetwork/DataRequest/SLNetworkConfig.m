@@ -36,14 +36,20 @@ static SLNetworkConfig *sharedInstance;
     [sharedInstance.commonHeaders addEntriesFromDictionary:params];
 }
 - (NSDictionary *)commonHeader {
-    return [self.commonHeaders copy];
+    return [sharedInstance.commonHeaders copy];
 }
 - (BOOL)handleResponseDataWithReponse:(NSURLResponse *)response
                        responseObject:(id)responseObject
                                 error:(NSError *)error {
-    if (self.responseBlock) {
+    if (sharedInstance.responseBlock) {
         return sharedInstance.responseBlock(response, responseObject, error);
     }
     return NO;
+}
+- (NSTimeInterval)requestTimeoutInteval {
+    if (_requestTimeoutInteval <= 0) {
+        return 30;
+    }
+    return _requestTimeoutInteval;
 }
 @end

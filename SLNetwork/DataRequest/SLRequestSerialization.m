@@ -29,6 +29,8 @@
     } else {
         request = [requestSerialize requestWithMethod:[SLNetworkTool requestMethodFromMethodType:[model requestMethod]] URLString:urlString parameters:[model requestParams] error:nil];
     }
+    request.timeoutInterval = [model requestTimeoutInterval];
+    request.allowsCellularAccess = [model allowsCellularAccess];
     NSMutableDictionary *requestHeadInfo = [NSMutableDictionary dictionary];
     [requestHeadInfo addEntriesFromDictionary:[SLNetworkConfig share].commonHeader];
     [requestHeadInfo addEntriesFromDictionary:[model requestHead]];

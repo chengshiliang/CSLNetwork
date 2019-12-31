@@ -12,6 +12,7 @@
 static int cacheTimeInterval = 60*60*24;
 @interface SLNetworkCache ()<NSCoding>
 @property (strong, nonatomic) id data;
+@property (copy, nonatomic) NSString *version;
 @property (nonatomic) NSTimeInterval cacheTime;
 @property (nonatomic) NSUInteger validTimeInterval;
 @end
@@ -26,12 +27,16 @@ static int cacheTimeInterval = 60*60*24;
     cache.data = data;
     cache.cacheTime = [[NSDate date] timeIntervalSince1970];
     cache.validTimeInterval = interterval > 0 ? interterval : cacheTimeInterval;
+    cache.version = [[[NSBundle mainBundle]infoDictionary]objectForKey:@"CFBundleShortVersionString"];
     return cache;
 }
 
 - (BOOL)isValid {
-    if (self.data) {
-        return [[NSDate date] timeIntervalSince1970] - self.cacheTime < self.validTimeInterval;
+    if (self.data && ![SLNetworkTool sl_networkEmptyString:self.version]) {
+        NSString *bundleVersion = [[[NSBundle mainBundle]infoDictionary]objectForKey:@"CFBundleShortVersionString"];
+        if ([bundleVersion isEqualToString:self.version]) {
+            return [[NSDate date] timeIntervalSince1970] - self.cacheTime < self.validTimeInterval;
+        }
     }
     return NO;
 }
@@ -161,12 +166,32 @@ static SLNetworkCacheManager *sharedManager;
                     cache = (SLNetworkCache *)[NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
                     NSTimeInterval seconds = -[[attributes fileModificationDate] timeIntervalSinceNow];
                     if (seconds > cache.cacheTime) {
-                        [[NSFileManager defaultManager] removeItemAtURL:[NSURL fileURLWithPath:filePath] error:nil];
+                        dispatch_async(sharedManager.networkQueue, ^{
+                            [[NSFileManager defaultManager] removeItemAtURL:[NSURL fileURLWithPath:filePath] error:nil];
+                        });
                         cache = nil;
                     } else {
-                        [sharedManager.cache setObject:cache forKey:key];
+                        NSString *bunderVersion = [[[NSBundle mainBundle]infoDictionary]objectForKey:@"CFBundleShortVersionString"];
+                        if (![cache.version isEqualToString:bunderVersion]) {
+                            dispatch_async(sharedManager.networkQueue, ^{
+                                [[NSFileManager defaultManager] removeItemAtURL:[NSURL fileURLWithPath:filePath] error:nil];
+                            });
+                            cache = nil;
+                        } else {
+                            [sharedManager.cache setObject:cache forKey:key];
+                        }
                     }
                 }
+            }
+        } else {
+            NSString *bunderVersion = [[[NSBundle mainBundle]infoDictionary]objectForKey:@"CFBundleShortVersionString"];
+            if (![cache.version isEqualToString:bunderVersion]) {
+                dispatch_async(sharedManager.networkQueue, ^{
+                    NSString *filePath = [sharedManager.cachePath stringByAppendingPathComponent:key];
+                    [[NSFileManager defaultManager] removeItemAtURL:[NSURL fileURLWithPath:filePath] error:nil];
+                });
+                cache = nil;
+                [sharedManager.cache removeObjectForKey:key];
             }
         }
     });

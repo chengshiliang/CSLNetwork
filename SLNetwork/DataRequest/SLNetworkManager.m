@@ -19,6 +19,8 @@
 
 @implementation SLNetworkManager
 static SLNetworkManager *sharedInstance;
+static NSString *SLNetworkStatusCodeError = @"SLNetworkStatusCodeError";
+static NSString *SLNetworkResponseValidateError = @"SLNetworkResponseValidateError";
 + (instancetype)share {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -114,6 +116,7 @@ static SLNetworkManager *sharedInstance;
                                    completionHandler:completionHandle];
         }];
     }
+    
     task.priority = [model priority];
     taskIdentifier[0] = @(task.taskIdentifier);
     dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
@@ -131,6 +134,12 @@ static SLNetworkManager *sharedInstance;
                    completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error, BOOL needHandle))completionHandle {
     dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);
     [sharedInstance.requestInfo removeObjectForKey:taskIdentifier];
+    NSError *validateError = nil;
+    if (![sharedInstance validateResult:model response:(NSHTTPURLResponse *)response responseObject:responseObject error:&validateError]) {
+        dispatch_semaphore_signal(sharedInstance.semaphore);
+        !completionHandle ?: completionHandle(nil, nil, validateError, NO);
+        return;
+    }
     if ([[SLNetworkConfig share]handleResponseDataWithReponse:response
                                                responseObject:responseObject
                                                         error:error]) {
@@ -145,6 +154,27 @@ static SLNetworkManager *sharedInstance;
     }
     dispatch_semaphore_signal(sharedInstance.semaphore);
     !completionHandle ?: completionHandle(response, responseObject, error, YES);
+}
+
+- (BOOL)validateResult:(id<SLRequestDataProtocol>)model response:(NSHTTPURLResponse *)response responseObject:(id)responseObject error:(NSError * _Nullable __autoreleasing *)error {
+    BOOL result = [model statusCodeValidator:response];
+    if (!result) {
+        if (error) {
+            *error = [NSError errorWithDomain:SLNetworkStatusCodeError code:-1 userInfo:@{NSLocalizedDescriptionKey:@"Invalid status code"}];
+        }
+        return result;
+    }
+    id validator = [model jsonValidator];
+    if (responseObject && validator) {
+        result = [SLNetworkTool validateJSON:responseObject withValidator:validator];
+        if (!result) {
+            if (error) {
+                *error = [NSError errorWithDomain:SLNetworkResponseValidateError code:-1 userInfo:@{NSLocalizedDescriptionKey:@"Invalid JSON format"}];
+            }
+            return result;
+        }
+    }
+    return YES;
 }
 
 - (void)cancelAllTask {

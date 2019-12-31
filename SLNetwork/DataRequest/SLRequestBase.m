@@ -11,7 +11,7 @@
 
 @implementation SLRequestBase
 - (SLRequestMethod)requestMethod {
-    return SLRequestGet;
+    return self.method;
 }
 - (NSDictionary *)requestParams {
     return self.params;
@@ -29,7 +29,7 @@
     return [SLNetworkConfig share].baseUrl;
 }
 - (NSTimeInterval)requestTimeoutInterval {
-    return 30;
+    return [SLNetworkConfig share].requestTimeoutInteval;
 }
 
 - (NSArray<SLUploadFile *> *)uploadFiles {
@@ -49,6 +49,16 @@
 }
 - (NSMutableURLRequest *)customRequest {
     return nil;
+}
+- (BOOL)allowsCellularAccess {
+    return YES;
+}
+- (id)jsonValidator {
+    return nil;
+}
+- (BOOL)statusCodeValidator:(NSHTTPURLResponse *)response {
+    NSInteger statusCode = response.statusCode;
+    return (statusCode >= 200 && statusCode <= 299);
 }
 - (NSString *)description {
     NSMutableArray *requestParameterKeys = [self.requestParams.allKeys mutableCopy];

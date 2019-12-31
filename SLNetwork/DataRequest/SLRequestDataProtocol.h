@@ -34,8 +34,11 @@ typedef NS_ENUM(NSInteger, SLRequestMethod) {
  NSURLSessionTaskPriorityLow
  */
 - (float)priority;// 网络访问优先级
+- (id)jsonValidator;
+- (BOOL)statusCodeValidator:(NSHTTPURLResponse *)response;
 @optional
 - (NSArray<SLUploadFile *> *)uploadFiles;
+- (BOOL)allowsCellularAccess;
 - (AFHTTPRequestSerializer<AFURLRequestSerialization> *)requestSerializer;
 - (AFHTTPResponseSerializer <AFURLResponseSerialization> *)responseSerializer;
 - (NSMutableURLRequest *)customRequest;// 自定义请求
