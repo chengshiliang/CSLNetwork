@@ -60,9 +60,7 @@ static NSString *SLNetworkResponseValidateError = @"SLNetworkResponseValidateErr
     if ([model cacheTimeInterval]>0) {
         NSString *cacheKey = [model description];
         SLNetworkCache *cache = [[SLNetworkCacheManager sharedManager] cacheForKey:cacheKey];
-        if (!cache || !cache.isValid) {
-            [[SLNetworkCacheManager sharedManager] removeCacheForKey:cacheKey];
-        } else {
+        if (cache) {
             if ([[SLNetworkConfig share]handleResponseDataWithReponse:nil
                                                        responseObject:cache.data
                                                                 error:nil]) {

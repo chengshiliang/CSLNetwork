@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)requestMethodFromMethodType:(SLRequestMethod)method;
 + (NSString *)fileTypeFromFileName:(NSString *)fileName;
 + (NSString *)sl_md5String:(NSString *)string;
++ (NSString *)version;
 + (BOOL)isUploadRequest:(NSArray<SLUploadFile *> *)files;
 + (BOOL)validateJSON:(id)json withValidator:(id)jsonValidator;
 @end

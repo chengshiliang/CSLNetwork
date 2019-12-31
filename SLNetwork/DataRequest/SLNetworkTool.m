@@ -89,6 +89,9 @@
 + (BOOL)isUploadRequest:(NSArray<SLUploadFile *> *)files {
     return files && files.count > 0;
 }
++ (NSString *)version {
+    return [[[NSBundle mainBundle]infoDictionary]objectForKey:@"CFBundleShortVersionString"];
+}
 + (BOOL)validateJSON:(id)json withValidator:(id)jsonValidator {
     if ([json isKindOfClass:[NSDictionary class]] &&
         [jsonValidator isKindOfClass:[NSDictionary class]]) {
