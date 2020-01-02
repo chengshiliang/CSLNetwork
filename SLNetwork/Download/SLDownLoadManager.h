@@ -31,6 +31,8 @@ typedef NS_ENUM(NSInteger, SLDownloadState) {
 
 @property (nonatomic, strong) NSURL *url;
 
+@property (nonatomic, assign) SLDownloadState state;
+
 @property (nonatomic, assign) NSInteger totalLength;
 
 @property (nonatomic, copy) void (^stateBlock)(SLDownloadState state);

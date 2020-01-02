@@ -106,8 +106,9 @@ static SLDownloadManager *downloadManager;
     [request setValue:[NSString stringWithFormat:@"bytes=%ld-", (long)[downloadManager downloadedLengthOfURL:url]] forHTTPHeaderField:@"Range"];
     NSURLSessionDataTask *dataTask = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
                                                                     delegate:downloadManager
-                                                        delegateQueue:[[NSOperationQueue alloc] init]] dataTaskWithRequest:request];
-    dataTask.taskDescription = [downloadManager fileNameOfURL:url];
+                                                               delegateQueue:[[NSOperationQueue alloc] init]]
+                                      dataTaskWithRequest:request];
+    dataTask.taskDescription = fileName;
     downloadModel = [[SLDownloadModel alloc] init];
     downloadModel.dataTask = dataTask;
     downloadModel.outputStream = [NSOutputStream outputStreamToFileAtPath:downloadFilePath append:YES];
@@ -134,19 +135,18 @@ static SLDownloadManager *downloadManager;
 
 - (void)downloadWithModel:(SLDownloadModel *)downloadModel {
     [downloadManager.lock lock];
-    SLDownloadState downloadState;
     if ([downloadManager hasSpaceDownloadQueue]) {
         [downloadManager.downloadingModels addObject:downloadModel];
         [downloadModel.dataTask resume];
-        downloadState = SLDownloadStateRunning;
+        downloadModel.state = SLDownloadStateRunning;
     } else {
         [downloadManager.waitingModels addObject:downloadModel];
-        downloadState = SLDownloadStateWaiting;
+        downloadModel.state = SLDownloadStateWaiting;
     }
     [downloadManager.lock unlock];
     dispatch_async(dispatch_get_main_queue(), ^{
         if (downloadModel.stateBlock) {
-            downloadModel.stateBlock(downloadState);
+            downloadModel.stateBlock(downloadModel.state);
         }
     });
 }
@@ -208,6 +208,7 @@ static SLDownloadManager *downloadManager;
     SLDownloadModel *downloadModel = downloadManager.downloadModelInfo[fileName];
     if (!downloadModel) return;
     [downloadManager.lock lock];
+    downloadModel.state = SLDownloadStateSuspended;
     if (downloadModel.stateBlock) {
         dispatch_async(dispatch_get_main_queue(), ^{
             downloadModel.stateBlock(SLDownloadStateSuspended);
@@ -226,6 +227,7 @@ static SLDownloadManager *downloadManager;
     [downloadManager.lock lock];
     for (int i = 0; i<downloadManager.waitingModels.count; i++) {
         SLDownloadModel *downloadModel = downloadManager.waitingModels[i];
+        downloadModel.state = SLDownloadStateSuspended;
         if (downloadModel.stateBlock) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 downloadModel.stateBlock(SLDownloadStateSuspended);
@@ -236,6 +238,7 @@ static SLDownloadManager *downloadManager;
     for (int i = 0; i<downloadManager.downloadingModels.count; i++) {
         SLDownloadModel *downloadModel = downloadManager.downloadingModels[i];
         [downloadModel.dataTask suspend];
+        downloadModel.state = SLDownloadStateSuspended;
         if (downloadModel.stateBlock) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 downloadModel.stateBlock(SLDownloadStateSuspended);
@@ -269,6 +272,7 @@ static SLDownloadManager *downloadManager;
     [downloadManager.lock lock];
     [downloadModel closeOutputStream];
     [downloadModel.dataTask cancel];
+    downloadModel.state = SLDownloadStateSuspended;
     if (downloadModel.stateBlock) {
         dispatch_async(dispatch_get_main_queue(), ^{
             downloadModel.stateBlock(SLDownloadStateSuspended);
@@ -290,6 +294,7 @@ static SLDownloadManager *downloadManager;
         SLDownloadModel *downloadModel = downloadModels[i];
         [downloadModel closeOutputStream];
         [downloadModel.dataTask cancel];
+        downloadModel.state = SLDownloadStateSuspended;
         if (downloadModel.stateBlock) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 downloadModel.stateBlock(SLDownloadStateSuspended);
@@ -379,9 +384,11 @@ static SLDownloadManager *downloadManager;
     NSString *fullPath = [downloadManager downloadFilePathOfURL:url];
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([downloadManager doneDownloadOfURL:url]) {
+            downloadModel.state = SLDownloadStateCompleted;
             if (downloadModel.stateBlock) downloadModel.stateBlock(SLDownloadStateCompleted);
             if (downloadModel.completionBlock) downloadModel.completionBlock(YES, fullPath, nil);
         } else {
+            downloadModel.state = SLDownloadStateFailed;
             if (downloadModel.stateBlock) downloadModel.stateBlock(SLDownloadStateFailed);
             if (downloadModel.completionBlock) downloadModel.completionBlock(NO, fullPath, error);
         }
