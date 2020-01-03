@@ -8,6 +8,35 @@
 #import "SLBatchRequestManager.h"
 #import <SLNetwork/SLNetworkManager.h>
 
+@interface SLBatchRequestAgent : NSObject
++ (instancetype)share;
+@property (nonatomic, strong) NSMutableArray *agents;
+@end
+
+@implementation SLBatchRequestAgent
+
+static SLBatchRequestAgent *sharedInstance;
++ (instancetype)share {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[self alloc] init];
+        sharedInstance.agents = [NSMutableArray array];
+    });
+    return sharedInstance;
+}
+
+- (void)addBatchRequest:(SLBatchRequestManager *)manager {
+    [sharedInstance.agents addObject:manager];
+}
+
+- (void)removeBatchRequest:(SLBatchRequestManager *)manager {
+    if ([sharedInstance.agents containsObject:manager]) {
+        [sharedInstance.agents removeObject:manager];
+    }
+}
+
+@end
+
 @interface SLBatchRequestModel : NSObject
 @property (nonatomic, strong) NSNumber *taskId;
 @property (nonatomic, strong) id<SLRequestDataProtocol> model;
@@ -57,6 +86,7 @@
 }
 
 - (void)startRequest:(void(^)())completeBlock {
+    [[SLBatchRequestAgent share]addBatchRequest:self];
     for (SLBatchRequestModel *requestModel in self.batchRequests) {
         dispatch_group_enter(self.group);
         __weak typeof (self)weakSelf = self;
@@ -69,7 +99,10 @@
         }];
         requestModel.taskId = taskId;
     }
+    __weak typeof (self)weakSelf = self;
     dispatch_group_notify(self.group, dispatch_get_main_queue(), ^{
+        __strong typeof (weakSelf)strongSelf = weakSelf;
+        [[SLBatchRequestAgent share]removeBatchRequest:strongSelf];
         !completeBlock?:completeBlock();
     });
 }
