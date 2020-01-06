@@ -14,9 +14,9 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0425AE6C511DE20B32D5C97538D74CC4"
-               BuildableName = "libSLNetwork.a"
-               BlueprintName = "SLNetwork"
+               BlueprintIdentifier = "BF9E57892EFD44344376EE1127888C58"
+               BuildableName = "CSLNetwork"
+               BlueprintName = "CSLNetwork"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

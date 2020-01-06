@@ -68,7 +68,7 @@ SOFTWARE.
 			<key>License</key>
 			<string>MIT</string>
 			<key>Title</key>
-			<string>SLNetwork</string>
+			<string>CSLNetwork</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>

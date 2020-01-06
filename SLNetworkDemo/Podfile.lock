@@ -14,25 +14,25 @@ PODS:
   - AFNetworking/Serialization (3.2.1)
   - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
-  - SLNetwork (0.0.1):
+  - CSLNetwork (0.0.1):
     - AFNetworking
 
 DEPENDENCIES:
   - AFNetworking (~> 3.0)
-  - SLNetwork (from `../`)
+  - CSLNetwork (from `../`)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - AFNetworking
 
 EXTERNAL SOURCES:
-  SLNetwork:
+  CSLNetwork:
     :path: "../"
 
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
-  SLNetwork: 58d9e64a111600bdb9802492c39c2a3d513d2ce1
+  CSLNetwork: db4cd5ac5ab5c74f2d201fc8e7c2ae09aafff436
 
-PODFILE CHECKSUM: 0f8ec2601d3f6ab935da84875faf074fbf5864db
+PODFILE CHECKSUM: d07cfa87aebc35bbca59200bd227ab0642e24743
 
 COCOAPODS: 1.8.4

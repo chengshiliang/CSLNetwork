@@ -2,6 +2,6 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 target 'SLNetworkDemo' do
 pod 'AFNetworking', '~> 3.0'
-pod 'SLNetwork', :path => '../'
+pod 'CSLNetwork', :path => '../'
 end
 inhibit_all_warnings!
