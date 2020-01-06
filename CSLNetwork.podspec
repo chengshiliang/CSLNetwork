@@ -7,8 +7,8 @@ Pod::Spec.new do |s|
   s.author       = { 'chengshiliang' => '285928582@qq.com' }
   s.source       = { :git => 'https://github.com/chengshiliang/CSLNetwork.git', :tag => s.version.to_s }
   s.platform     = :ios, '7.0'
-  s.source_files = 'SLNetwork/*.{h,m}'
-  s.source_files = 'SLNetwork/**/*.{h,m}'
+  s.source_files = 'CSLNetwork/*.{h,m}'
+  s.source_files = 'CSLNetwork/**/*.{h,m}'
   s.requires_arc = true
   s.frameworks   = 'Foundation', 'UIKit'
   s.dependency 'AFNetworking'

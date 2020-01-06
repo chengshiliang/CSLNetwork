@@ -17,7 +17,7 @@
   "platforms": {
     "ios": "7.0"
   },
-  "source_files": "SLNetwork/**/*.{h,m}",
+  "source_files": "CSLNetwork/**/*.{h,m}",
   "requires_arc": true,
   "frameworks": [
     "Foundation",
