@@ -85,7 +85,7 @@ static SLBatchRequestAgent *sharedInstance;
     [self.batchRequests addObject:requestModel];
 }
 
-- (void)startRequest:(void(^)())completeBlock {
+- (void)startRequest:(void(^)(void))completeBlock {
     [[SLBatchRequestAgent share]addBatchRequest:self];
     for (SLBatchRequestModel *requestModel in self.batchRequests) {
         dispatch_group_enter(self.group);

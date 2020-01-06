@@ -131,10 +131,10 @@ static NSString *SLNetworkResponseValidateError = @"SLNetworkResponseValidateErr
 }
 
 - (void)handleReponseResultWithModel:(id<SLRequestDataProtocol>)model
-                             reponse:(NSURLResponse *)response
-                      responseObject:(id)responseObject
+                             reponse:(NSURLResponse *_Nullable)response
+                      responseObject:(id _Nullable)responseObject
                       taskIdentifier:(NSNumber *)taskIdentifier
-                               error:(NSError *)error
+                               error:(NSError *_Nullable)error
                    completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error, BOOL needHandle))completionHandle {
     if (![sharedInstance.requestInfo.allKeys containsObject:taskIdentifier]) return;
     dispatch_semaphore_wait(sharedInstance.semaphore, DISPATCH_TIME_FOREVER);

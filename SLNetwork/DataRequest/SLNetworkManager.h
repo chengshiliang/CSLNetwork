@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSNumber *)requestWithModel:(id<SLRequestDataProtocol>)model
              completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error, BOOL needHandle))completionHandle;
 - (NSNumber *)requestWithModel:(id<SLRequestDataProtocol>)model
-                uploadProgress:(void(^)(NSProgress *uploadProgress))uploadProgressBlock
+                uploadProgress:(void(^_Nullable)(NSProgress *uploadProgress))uploadProgressBlock
              completionHandler:(void(^)(NSURLResponse *response,id responseObject,NSError *error, BOOL needHandle))completionHandle;
 - (void)cancelAllTask;
 - (void)cancelTaskWithtaskIdentifier:(NSNumber *)taskIdentifierl;

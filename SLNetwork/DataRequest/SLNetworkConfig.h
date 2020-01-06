@@ -20,9 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addCommonRequestHeaderWithParams:(NSDictionary *)params;
 - (NSDictionary *)commonHeader;
 
-- (BOOL)handleResponseDataWithReponse:(NSURLResponse *)response
-                       responseObject:(id)responseObject
-                                error:(NSError *)error;// 是否成功拦截网络请求返回数据。不需要下一步处理。比如401直接登陆的情况
+- (BOOL)handleResponseDataWithReponse:(NSURLResponse * _Nullable)response
+                       responseObject:(id _Nullable)responseObject
+                                error:(NSError * _Nullable)error;// 是否成功拦截网络请求返回数据。不需要下一步处理。比如401直接登陆的情况
 @end
 
 NS_ASSUME_NONNULL_END

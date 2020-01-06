@@ -17,6 +17,6 @@
 #import "SLRequestDataProtocol.h"
 #import "SLRequestSerialization.h"
 #import "SLUploadFile.h"
-#import "SLDownLoadManager.h"
+#import "SLDownloadManager.h"
 
 #endif /* SLNetwork_h */

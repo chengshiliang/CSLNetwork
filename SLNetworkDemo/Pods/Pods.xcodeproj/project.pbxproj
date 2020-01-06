@@ -14,7 +14,7 @@
 		0C26E8CE5202114A92A9CFFBA1A9CE88 /* UIButton+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = D13BD130E707420929CC1389CB34D5C3 /* UIButton+AFNetworking.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		1102564C9CDAC18DF8D6DB20F6523E72 /* AFNetworkReachabilityManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E297833633D63BDAAEF544941C4C724C /* AFNetworkReachabilityManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		163B2273AD274CE5C59373497D9D9963 /* SLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 05219D87BD3694D6C78C121EAB0DD060 /* SLRequestSerialization.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
-		17B53D1E6A5C2DD8D56875A212EE87FC /* SLDownLoadManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 8D8F5C5A846FC2B918F2FE95E0B58F02 /* SLDownLoadManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		17B53D1E6A5C2DD8D56875A212EE87FC /* SLDownloadManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 8D8F5C5A846FC2B918F2FE95E0B58F02 /* SLDownloadManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		1C0A28EFED714AA370664B2F261137D0 /* SLNetworkCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 0660C194A3C937D5B38929C95CFACD26 /* SLNetworkCache.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 		337C8A9592224E2629F71F4759AE0DF2 /* UIWebView+AFNetworking.h in Headers */ = {isa = PBXBuildFile; fileRef = 7F2B267B158B2AE06D53788A843D89F0 /* UIWebView+AFNetworking.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		388FED0E693E62E2A021D791622D923A /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A0473FBB5AC34E75AD64849639D67173 /* AFHTTPSessionManager.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
@@ -31,7 +31,7 @@
 		6CB316D3625C84412DE22B9A235A01F0 /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = C596592F62EA58CBF34F0F017F3308DB /* AFURLRequestSerialization.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 		72131334F39177232F5C64E5C2259711 /* AFAutoPurgingImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 9899605EFA17AAE6B0C3D33CBBC4FA0A /* AFAutoPurgingImageCache.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 		7FD4DA962081937E2909251631083650 /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 30E3EC724125C85D2DBC031563CF6CE3 /* UIRefreshControl+AFNetworking.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
-		89F8CA9A72C0B728FE9CD388598B4314 /* SLDownLoadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3674E96EB92E6300FF0220BAFC8DE97E /* SLDownLoadManager.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
+		89F8CA9A72C0B728FE9CD388598B4314 /* SLDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3674E96EB92E6300FF0220BAFC8DE97E /* SLDownloadManager.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 		8E3400FF4EBD6ED559D43E697A80BAF8 /* SLRequestSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = 85058BB6974A5949BD512C96BF93CBEF /* SLRequestSerialization.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		91D7908E1BA700DC58DF4BF2763CAEAF /* SLUploadFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E22307ABD595E63C2B75028151C4F1 /* SLUploadFile.m */; settings = {COMPILER_FLAGS = "-w -Xanalyzer -analyzer-disable-all-checks"; }; };
 		93032D8354FB76AD312CDFB24BE64287 /* SLUploadFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 9EC72C8A9503AAA63AC87924C87AAF4E /* SLUploadFile.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -91,7 +91,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		021BF33E59EF413B7B73789133989A5A /* libSLNetwork.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libSLNetwork.a; path = libSLNetwork.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		021BF33E59EF413B7B73789133989A5A /* libSLNetwork.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSLNetwork.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		05219D87BD3694D6C78C121EAB0DD060 /* SLRequestSerialization.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SLRequestSerialization.m; sourceTree = "<group>"; };
 		0660C194A3C937D5B38929C95CFACD26 /* SLNetworkCache.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SLNetworkCache.m; sourceTree = "<group>"; };
 		07316E62C5E083C07CA7403DF3BC2ABF /* UIProgressView+AFNetworking.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIProgressView+AFNetworking.m"; path = "UIKit+AFNetworking/UIProgressView+AFNetworking.m"; sourceTree = "<group>"; };
@@ -108,18 +108,18 @@
 		309236B7A79E0B741E01426B63AA25B0 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIImageView+AFNetworking.m"; path = "UIKit+AFNetworking/UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		309C7A1C202AED570AACD3BD4DE26A29 /* Pods-SLNetworkDemo-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-SLNetworkDemo-acknowledgements.plist"; sourceTree = "<group>"; };
 		30E3EC724125C85D2DBC031563CF6CE3 /* UIRefreshControl+AFNetworking.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIRefreshControl+AFNetworking.m"; path = "UIKit+AFNetworking/UIRefreshControl+AFNetworking.m"; sourceTree = "<group>"; };
-		3674E96EB92E6300FF0220BAFC8DE97E /* SLDownLoadManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SLDownLoadManager.m; sourceTree = "<group>"; };
+		3674E96EB92E6300FF0220BAFC8DE97E /* SLDownloadManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SLDownloadManager.m; sourceTree = "<group>"; };
 		3AE2DC5F464B1DBBDE96F85708D2B581 /* AFNetworking-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AFNetworking-prefix.pch"; sourceTree = "<group>"; };
 		4135FB89EABF790824E663EED844C7B2 /* AFURLRequestSerialization.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AFURLRequestSerialization.h; path = AFNetworking/AFURLRequestSerialization.h; sourceTree = "<group>"; };
 		443C8386AB726B99754752B24BBF7147 /* AFSecurityPolicy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AFSecurityPolicy.m; path = AFNetworking/AFSecurityPolicy.m; sourceTree = "<group>"; };
-		470D94F239E2BE0EDA308AA20D73E917 /* SLNetwork.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = SLNetwork.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		470D94F239E2BE0EDA308AA20D73E917 /* SLNetwork.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = SLNetwork.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		4FF3C0A8465E67F6530420E9A71ECEB2 /* SLRequestBase.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SLRequestBase.h; sourceTree = "<group>"; };
 		4FF9C56EA7DBEA08523363AA4E352E41 /* UIProgressView+AFNetworking.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIProgressView+AFNetworking.h"; path = "UIKit+AFNetworking/UIProgressView+AFNetworking.h"; sourceTree = "<group>"; };
 		547388474BD416C2EB800310C56D596B /* SLNetwork.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SLNetwork.h; path = SLNetwork/SLNetwork.h; sourceTree = "<group>"; };
 		56599BF343263C86333DDB952A545A9F /* SLBatchRequestManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SLBatchRequestManager.m; sourceTree = "<group>"; };
 		57A0071B88505A2B5A547F9A345C60FC /* SLNetworkCache.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SLNetworkCache.h; sourceTree = "<group>"; };
 		652FD793ADA50A2BCEB5F7FA3423635A /* AFNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AFNetworkActivityIndicatorManager.m; path = "UIKit+AFNetworking/AFNetworkActivityIndicatorManager.m"; sourceTree = "<group>"; };
-		6A48A43B51764228A8F179037AB5261F /* libPods-SLNetworkDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-SLNetworkDemo.a"; path = "libPods-SLNetworkDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A48A43B51764228A8F179037AB5261F /* libPods-SLNetworkDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SLNetworkDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DCA3E47ADE6C76382EE5E95DAFB254B /* UIRefreshControl+AFNetworking.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIRefreshControl+AFNetworking.h"; path = "UIKit+AFNetworking/UIRefreshControl+AFNetworking.h"; sourceTree = "<group>"; };
 		74B34A88E9BB0B84FFC25DF40821005A /* AFURLResponseSerialization.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AFURLResponseSerialization.h; path = AFNetworking/AFURLResponseSerialization.h; sourceTree = "<group>"; };
 		7899F78FAB1550068D3B83E1DDCA9366 /* SLNetwork-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SLNetwork-prefix.pch"; sourceTree = "<group>"; };
@@ -130,19 +130,19 @@
 		85DD35788A4653CCEB98A48A90FECCA8 /* AFURLSessionManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AFURLSessionManager.h; path = AFNetworking/AFURLSessionManager.h; sourceTree = "<group>"; };
 		8731BAE5A5E24E500A625277940E1CEC /* AFNetworkReachabilityManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AFNetworkReachabilityManager.m; path = AFNetworking/AFNetworkReachabilityManager.m; sourceTree = "<group>"; };
 		8BA54ED4143E975785A0CA723E188037 /* AFCompatibilityMacros.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AFCompatibilityMacros.h; path = AFNetworking/AFCompatibilityMacros.h; sourceTree = "<group>"; };
-		8D8F5C5A846FC2B918F2FE95E0B58F02 /* SLDownLoadManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SLDownLoadManager.h; sourceTree = "<group>"; };
+		8D8F5C5A846FC2B918F2FE95E0B58F02 /* SLDownloadManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SLDownloadManager.h; sourceTree = "<group>"; };
 		8E2DA1D2E42BB45B6CF0BF1987C0FD5F /* AFNetworking.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AFNetworking.xcconfig; sourceTree = "<group>"; };
 		92DB6876536D97A2A884380AF085CCB2 /* SLNetwork.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SLNetwork.xcconfig; sourceTree = "<group>"; };
 		9899605EFA17AAE6B0C3D33CBBC4FA0A /* AFAutoPurgingImageCache.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AFAutoPurgingImageCache.m; path = "UIKit+AFNetworking/AFAutoPurgingImageCache.m"; sourceTree = "<group>"; };
-		99BA3DF00BAEAD7ECFB9555EFF9343CA /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		99BA3DF00BAEAD7ECFB9555EFF9343CA /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9EAE210C7D07DE6AD433B80F11269106 /* SLNetworkTool.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SLNetworkTool.m; sourceTree = "<group>"; };
 		9EC72C8A9503AAA63AC87924C87AAF4E /* SLUploadFile.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SLUploadFile.h; sourceTree = "<group>"; };
 		A0473FBB5AC34E75AD64849639D67173 /* AFHTTPSessionManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AFHTTPSessionManager.m; path = AFNetworking/AFHTTPSessionManager.m; sourceTree = "<group>"; };
-		A4FA15D44DF6BAC7550EDEED10862AA3 /* libAFNetworking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libAFNetworking.a; path = libAFNetworking.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A4FA15D44DF6BAC7550EDEED10862AA3 /* libAFNetworking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAFNetworking.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A523659028574E870A6569C097D264F7 /* AFImageDownloader.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AFImageDownloader.h; path = "UIKit+AFNetworking/AFImageDownloader.h"; sourceTree = "<group>"; };
 		A8C80635F126EBEDD9EF7ED15D939BBB /* SLBatchRequestManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SLBatchRequestManager.h; sourceTree = "<group>"; };
-		AF23EA640D2CC36F4C92CF1F5807F7AE /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		AF23EA640D2CC36F4C92CF1F5807F7AE /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		B4E1D4628950CA5BEA0E090051D85955 /* AFNetworking-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "AFNetworking-dummy.m"; sourceTree = "<group>"; };
 		B69A7A4ECD947CC914B95F981E55BC03 /* Pods-SLNetworkDemo-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-SLNetworkDemo-dummy.m"; sourceTree = "<group>"; };
 		B7E0E06E978C6D9300675B0736799877 /* SLRequestBase.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SLRequestBase.m; sourceTree = "<group>"; };
@@ -265,7 +265,6 @@
 				0E3469DEFFA625D24D2C2395AA5382BA /* Support Files */,
 				61D868E3AF3B5624C1D596D98D062F28 /* UIKit */,
 			);
-			name = AFNetworking;
 			path = AFNetworking;
 			sourceTree = "<group>";
 		};
@@ -412,8 +411,8 @@
 		F33A88B115B827ADFB27EB85403675E1 /* Download */ = {
 			isa = PBXGroup;
 			children = (
-				8D8F5C5A846FC2B918F2FE95E0B58F02 /* SLDownLoadManager.h */,
-				3674E96EB92E6300FF0220BAFC8DE97E /* SLDownLoadManager.m */,
+				8D8F5C5A846FC2B918F2FE95E0B58F02 /* SLDownloadManager.h */,
+				3674E96EB92E6300FF0220BAFC8DE97E /* SLDownloadManager.m */,
 			);
 			name = Download;
 			path = SLNetwork/Download;
@@ -460,7 +459,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EDF10AD38253FD23001869A73EB51FAC /* SLBatchRequestManager.h in Headers */,
-				17B53D1E6A5C2DD8D56875A212EE87FC /* SLDownLoadManager.h in Headers */,
+				17B53D1E6A5C2DD8D56875A212EE87FC /* SLDownloadManager.h in Headers */,
 				CDC958D367FB1154E2733AB7D171E991 /* SLNetwork.h in Headers */,
 				048471B43630B97B0D915F8361829E6A /* SLNetworkCache.h in Headers */,
 				43E241D89CBB87079916A3ABC49BAB27 /* SLNetworkConfig.h in Headers */,
@@ -564,7 +563,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9DC7EB29B4B8DA41D19DDFF91520B5C7 /* SLBatchRequestManager.m in Sources */,
-				89F8CA9A72C0B728FE9CD388598B4314 /* SLDownLoadManager.m in Sources */,
+				89F8CA9A72C0B728FE9CD388598B4314 /* SLDownloadManager.m in Sources */,
 				D8C562D8A10521C9BB408D6BCB8D8415 /* SLNetwork-dummy.m in Sources */,
 				1C0A28EFED714AA370664B2F261137D0 /* SLNetworkCache.m in Sources */,
 				FE3A7775A9DD19F38562FE9866FA3DFF /* SLNetworkConfig.m in Sources */,
