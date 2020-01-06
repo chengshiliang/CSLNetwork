@@ -22,9 +22,14 @@
     if (!_outputStream) return;
     [_outputStream open];
 }
+
+- (NSString *)taskIdentifier {
+    return [SLNetworkTool sl_md5String:self.dataTask.taskDescription];
+}
 @end
 
 @interface SLDownloadManager()<NSURLSessionDelegate, NSURLSessionDataDelegate>
+@property (nonatomic, strong) NSURLSession *session;
 @property (nonatomic, strong) NSMutableDictionary *downloadModelInfo;
 @property (nonatomic, strong) NSMutableArray *downloadingModels;
 @property (nonatomic, strong) NSMutableArray *waitingModels;
@@ -60,6 +65,9 @@ static SLDownloadManager *downloadManager;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         downloadManager = [[self alloc] init];
+        downloadManager.session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:downloadManager.downloadIdentifier]
+                                                                delegate:downloadManager
+                                                           delegateQueue:[[NSOperationQueue alloc] init]];
         downloadManager.maxConcurrentCount = -1;
         downloadManager.queueMode = SLDownloadQueueModeFILO;
         downloadManager.lock = [NSLock new];
@@ -70,13 +78,18 @@ static SLDownloadManager *downloadManager;
 
 - (instancetype)init{
     if (self = [super init]) {
-        
+        self.downloadIdentifier = @"SLDownloadTaskIdentifier";
     }
     return self;
 }
 
+- (void)setDownloadIdentifier:(NSString *)downloadIdentifier {
+    if ([SLNetworkTool sl_networkEmptyString:downloadIdentifier]) return;
+    _downloadIdentifier = downloadIdentifier;
+}
+
 - (BOOL)hasSpaceDownloadQueue {
-    if (downloadManager.maxConcurrentCount == -1) return YES;
+    if (downloadManager.maxConcurrentCount <= 0) return YES;
     if (downloadManager.downloadingModels.count >= downloadManager.maxConcurrentCount) return NO;
     return YES;
 }
@@ -99,15 +112,13 @@ static SLDownloadManager *downloadManager;
     downloadModel.progressBlock = progressBlock;
     downloadModel.completionBlock = completionBlock;
     if (downloadModel) {
+        if (stateBlock) stateBlock(downloadModel.state);
         return;
     }
     [downloadManager.lock lock];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setValue:[NSString stringWithFormat:@"bytes=%ld-", (long)[downloadManager downloadedLengthOfURL:url]] forHTTPHeaderField:@"Range"];
-    NSURLSessionDataTask *dataTask = [[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
-                                                                    delegate:downloadManager
-                                                               delegateQueue:[[NSOperationQueue alloc] init]]
-                                      dataTaskWithRequest:request];
+    NSURLSessionDataTask *dataTask = [downloadManager.session dataTaskWithRequest:request];
     dataTask.taskDescription = fileName;
     downloadModel = [[SLDownloadModel alloc] init];
     downloadModel.dataTask = dataTask;
@@ -119,7 +130,7 @@ static SLDownloadManager *downloadManager;
 }
 
 - (void)downloadNext {
-    if (downloadManager.maxConcurrentCount == -1) return;
+    if (downloadManager.maxConcurrentCount <= 0) return;
     if (downloadManager.waitingModels.count == 0) return;
     [downloadManager.lock lock];
     SLDownloadModel *downloadModel = downloadManager.waitingModels.lastObject;

@@ -48,7 +48,9 @@ typedef NS_ENUM(NSInteger, SLDownloadState) {
 
 @interface SLDownloadManager : NSObject
 @property (nonatomic, copy) NSString *downloadFileDir;// 文件下载路径
+@property (nonatomic, strong, readonly) NSURLSession *session;
 @property (nonatomic, assign) NSInteger maxConcurrentCount;
+@property (nonatomic, copy) NSString *downloadIdentifier;
 @property (nonatomic, assign) SLDownloadQueueMode queueMode;
 + (instancetype)sharedManager;
 - (void)download:(NSString *)urlString
