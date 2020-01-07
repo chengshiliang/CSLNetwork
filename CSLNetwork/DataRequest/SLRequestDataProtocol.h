@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <SLNetwork/SLUploadFile.h>
+#import <CSLNetwork/SLUploadFile.h>
 #import <AFNetworking/AFNetworking.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -21,7 +21,7 @@ typedef NS_ENUM(NSInteger, SLRequestMethod) {
 
 @protocol SLRequestDataProtocol <NSObject>
 - (SLRequestMethod)requestMethod;
-- (NSDictionary *)requestParams;
+- (id)requestParams;
 - (NSDictionary *)requestHead;
 - (NSString *)requestUrl;
 - (NSString *)requestBaseUrl;

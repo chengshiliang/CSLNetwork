@@ -15,15 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PuaList : SLRequestBase
 
 @end
-@interface PuaHandle : SLRequestBase
-
-@end
-@interface PuaPermissionModify : SLRequestBase
-
-@end
-@interface PuaAudit : SLRequestBase
-
-@end
 @interface PuaModel : SLRequestBase
 
 @end

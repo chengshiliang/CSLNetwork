@@ -6,7 +6,7 @@
 //
 
 #import "SLUploadFile.h"
-#import <SLNetwork/SLNetworkTool.h>
+#import <CSLNetwork/SLNetworkTool.h>
 
 @interface SLUploadFile()
 @property (nonatomic, copy) NSString *name;

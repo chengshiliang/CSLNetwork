@@ -6,7 +6,7 @@
 //
 
 #import "SLBatchRequestManager.h"
-#import <SLNetwork/SLNetworkManager.h>
+#import <CSLNetwork/SLNetworkManager.h>
 
 @interface SLBatchRequestAgent : NSObject
 + (instancetype)share;

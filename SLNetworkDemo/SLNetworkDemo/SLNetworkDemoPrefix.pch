@@ -9,6 +9,6 @@
 #ifndef SLNetworkDemoPrefix_pch
 #define SLNetworkDemoPrefix_pch
 
-#import <SLNetwork/SLNetwork.h>
+#import <CSLNetwork/SLNetwork.h>
 
 #endif /* SLNetworkDemoPrefix_pch */

@@ -6,9 +6,9 @@
 //
 
 #import "SLRequestSerialization.h"
-#import <SLNetwork/SLNetworkTool.h>
-#import <SLNetwork/SLNetworkConfig.h>
-#import <SLNetwork/SLUploadFile.h>
+#import <CSLNetwork/SLNetworkTool.h>
+#import <CSLNetwork/SLNetworkConfig.h>
+#import <CSLNetwork/SLUploadFile.h>
 #import <AFNetworking/AFURLRequestSerialization.h>
 
 @interface SLRequestSerialization()
@@ -21,7 +21,11 @@
     NSArray<SLUploadFile *> *uploadFiles = [model uploadFiles];
     NSMutableURLRequest *request;
     if ([SLNetworkTool isUploadRequest:uploadFiles]) {
-        request = [requestSerialize multipartFormRequestWithMethod:[SLNetworkTool requestMethodFromMethodType:[model requestMethod]] URLString:urlString parameters:[model requestParams] constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        NSDictionary *requestParams = @{};
+        if ([model requestParams] && [[model requestParams] isKindOfClass:[NSDictionary class]]) {
+            requestParams = (NSDictionary *)[model requestParams];
+        }
+        request = [requestSerialize multipartFormRequestWithMethod:[SLNetworkTool requestMethodFromMethodType:[model requestMethod]] URLString:urlString parameters:requestParams constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
             [uploadFiles enumerateObjectsUsingBlock:^(SLUploadFile *file, NSUInteger idx, BOOL *stop) {
                 [formData appendPartWithFileData:file.fileData name:file.name fileName:file.fileName mimeType:file.mimeType];
             }];

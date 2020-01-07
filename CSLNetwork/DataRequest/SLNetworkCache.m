@@ -6,8 +6,8 @@
 //
 
 #import "SLNetworkCache.h"
-#import <SLNetwork/SLNetworkConfig.h>
-#import <SLNetwork/SLNetworkTool.h>
+#import <CSLNetwork/SLNetworkConfig.h>
+#import <CSLNetwork/SLNetworkTool.h>
 
 static int cacheTimeInterval = 60*60*24;
 @interface SLNetworkCache ()<NSCoding>

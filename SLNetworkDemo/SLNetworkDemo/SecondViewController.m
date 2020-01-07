@@ -16,8 +16,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    PuaAudit *model = [PuaAudit new];
-    [model setParams:@{@"pass": @(true), @"memo": @"发发发"}];
+    SLRequestBase *model = [SLRequestBase initWithUrl:@"entity_ca/136/audits" params:@{@"pass": @(true), @"memo": @"发发发"} method:SLRequestGet];
     [[SLNetworkManager share]requestWithModel:model completionHandler:^(NSURLResponse * _Nonnull response, id  _Nonnull responseObject, NSError * _Nonnull error, BOOL needHandle) {
         NSLog(@"responseObject %@", responseObject);
         NSLog(@"error %@", error);

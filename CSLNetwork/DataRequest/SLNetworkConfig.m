@@ -6,7 +6,7 @@
 //
 
 #import "SLNetworkConfig.h"
-#import <SLNetwork/SLNetworkTool.h>
+#import <CSLNetwork/SLNetworkTool.h>
 
 @interface SLNetworkConfig()
 @property (nonatomic, strong) NSMutableDictionary *commonHeaders;

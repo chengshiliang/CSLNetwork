@@ -6,12 +6,15 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <SLNetwork/SLRequestDataProtocol.h>
+#import <CSLNetwork/SLRequestDataProtocol.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SLRequestBase : NSObject<SLRequestDataProtocol>
-@property (nonatomic, copy) NSDictionary *params;
++ (instancetype)initWithUrl:(NSString *)url
+                     params:(id)params
+                     method:(SLRequestMethod)method;
+@property (nonatomic, strong) id params;
 @property (nonatomic, assign) SLRequestMethod method;
 @property (nonatomic, copy) NSString *url;
 @end

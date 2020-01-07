@@ -6,10 +6,10 @@
 //
 
 #import "SLNetworkManager.h"
-#import <SLNetwork/SLRequestSerialization.h>
-#import <SLNetwork/SLNetworkTool.h>
-#import <SLNetwork/SLNetworkConfig.h>
-#import <SLNetwork/SLNetworkCache.h>
+#import <CSLNetwork/SLRequestSerialization.h>
+#import <CSLNetwork/SLNetworkTool.h>
+#import <CSLNetwork/SLNetworkConfig.h>
+#import <CSLNetwork/SLNetworkCache.h>
 
 @interface SLNetworkManager()
 @property (nonatomic, strong) dispatch_semaphore_t semaphore;

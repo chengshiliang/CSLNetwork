@@ -6,14 +6,32 @@
 //
 
 #import "SLRequestBase.h"
-#import <SLNetwork/SLNetworkConfig.h>
-#import <SLNetwork/SLNetworkTool.h>
+#import <CSLNetwork/SLNetworkConfig.h>
+#import <CSLNetwork/SLNetworkTool.h>
 
 @implementation SLRequestBase
++ (instancetype)initWithUrl:(NSString *)url
+                     params:(id)params
+                     method:(SLRequestMethod)method {
+    return [[self alloc]initWithUrl:url
+                             params:params
+                             method:method];
+}
+
+- (instancetype)initWithUrl:(NSString *)url
+                     params:(id)params
+                     method:(SLRequestMethod)method {
+    if (self == [super init]) {
+        self.url = url;
+        self.params = params;
+        self.method = method;
+    }
+    return self;
+}
 - (SLRequestMethod)requestMethod {
     return self.method;
 }
-- (NSDictionary *)requestParams {
+- (id)requestParams {
     return self.params;
 }
 - (NSDictionary *)requestHead {
@@ -64,16 +82,30 @@
     return (statusCode >= 200 && statusCode <= 299);
 }
 - (NSString *)description {
-    NSMutableArray *requestParameterKeys = [self.requestParams.allKeys mutableCopy];
+    NSMutableArray *requestParameterKeys = [NSMutableArray array];
+    if (self.requestParams && [self.requestParams isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *dictionary = (NSDictionary *)self.requestParams;
+        requestParameterKeys = [(NSDictionary *)dictionary.allKeys mutableCopy];
+    }
+    NSMutableString *mString = [NSMutableString stringWithString:[NSString stringWithFormat:@"%@%@",@(self.requestMethod), self.requestUrl]];
+    if (!self.requestParams) return [SLNetworkTool sl_md5String:mString];
     if (requestParameterKeys.count > 1) {
         [requestParameterKeys sortedArrayUsingComparator:^NSComparisonResult(NSString * _Nonnull obj1, NSString * _Nonnull obj2) {
             return [obj1 compare:obj2];
         }];
+        [requestParameterKeys enumerateObjectsUsingBlock:^(NSString * _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
+            [mString appendFormat:@"&%@=%@",key, self.requestParams[key]];
+        }];
+    } else {
+        id params = self.requestParams;
+        if ([params isKindOfClass:[NSArray class]] || [params isKindOfClass:[NSSet class]]) {
+            [params enumerateObjectsUsingBlock:^(NSString * _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
+                [mString appendFormat:@"&%@=%@",key, self.requestParams[key]];
+            }];
+        } else {
+            [mString appendFormat:@"%@", params];
+        }
     }
-    NSMutableString *mString = [NSMutableString stringWithString:[NSString stringWithFormat:@"%@%@",@(self.requestMethod), self.requestUrl]];
-    [requestParameterKeys enumerateObjectsUsingBlock:^(NSString * _Nonnull key, NSUInteger idx, BOOL * _Nonnull stop) {
-        [mString appendFormat:@"&%@=%@",key, self.requestParams[key]];
-    }];
     return [SLNetworkTool sl_md5String:mString];
 }
 @end

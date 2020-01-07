@@ -43,30 +43,6 @@
     return @"puas";
 }
 @end
-@implementation PuaHandle
-- (SLRequestMethod)requestMethod {
-    return SLRequestPatch;
-}
-- (NSString *)requestUrl {
-    return @"pua/1157193/state";
-}
-@end
-@implementation PuaPermissionModify
-- (SLRequestMethod)requestMethod {
-    return SLRequestPost;
-}
-- (NSString *)requestUrl {
-    return @"permission/1157193";
-}
-@end
-@implementation PuaAudit
-- (SLRequestMethod)requestMethod {
-    return SLRequestPost;
-}
-- (NSString *)requestUrl {
-    return @"entity_ca/136/audits";
-}
-@end
 @implementation PuaModel
 
 @end

@@ -7,7 +7,7 @@
 //
 
 #import "SLDownloadManager.h"
-#import <SLNetwork/SLNetworkTool.h>
+#import <CSLNetwork/SLNetworkTool.h>
 
 @implementation SLDownloadModel
 - (void)closeOutputStream {
