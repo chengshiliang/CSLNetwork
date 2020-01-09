@@ -14,7 +14,7 @@ PODS:
   - AFNetworking/Serialization (3.2.1)
   - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
-  - CSLNetwork (0.0.2):
+  - CSLNetwork (0.0.3):
     - AFNetworking
 
 DEPENDENCIES:
@@ -31,7 +31,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
-  CSLNetwork: 786dd50cd39a66f6c8ad4265c77ba7e5c4892176
+  CSLNetwork: 53bcfafd0f33eb5a265ffc6043af79e0d93821b9
 
 PODFILE CHECKSUM: d07cfa87aebc35bbca59200bd227ab0642e24743
 
