@@ -52,6 +52,7 @@ typedef NS_ENUM(NSInteger, SLDownloadState) {
 @property (nonatomic, assign) NSInteger maxConcurrentCount;
 @property (nonatomic, copy) NSString *downloadIdentifier;
 @property (nonatomic, assign) SLDownloadQueueMode queueMode;
+@property (nonatomic, strong) NSMutableDictionary<NSString *,void(^)(void)> *sessionCompleteHandle;
 + (instancetype)sharedManager;
 - (void)download:(NSString *)urlString
            state:(void(^)(SLDownloadState state))stateBlock

@@ -72,6 +72,7 @@ static SLDownloadManager *downloadManager;
         downloadManager.queueMode = SLDownloadQueueModeFILO;
         downloadManager.lock = [NSLock new];
         downloadManager.downloadQueue = dispatch_queue_create("com.sl.download", DISPATCH_QUEUE_CONCURRENT);
+        downloadManager.sessionCompleteHandle = [NSMutableDictionary dictionary];
     });
     return downloadManager;
 }
@@ -108,11 +109,8 @@ static SLDownloadManager *downloadManager;
     }
     NSString *fileName = [downloadManager fileNameOfURL:url];
     SLDownloadModel *downloadModel = downloadManager.downloadModelInfo[fileName];
-    downloadModel.stateBlock = stateBlock;
-    downloadModel.progressBlock = progressBlock;
-    downloadModel.completionBlock = completionBlock;
     if (downloadModel) {
-        if (stateBlock) stateBlock(downloadModel.state);
+        if (downloadModel.stateBlock) downloadModel.stateBlock(downloadModel.state);
         return;
     }
     [downloadManager.lock lock];
@@ -121,6 +119,9 @@ static SLDownloadManager *downloadManager;
     NSURLSessionDataTask *dataTask = [downloadManager.session dataTaskWithRequest:request];
     dataTask.taskDescription = fileName;
     downloadModel = [[SLDownloadModel alloc] init];
+    downloadModel.stateBlock = stateBlock;
+    downloadModel.progressBlock = progressBlock;
+    downloadModel.completionBlock = completionBlock;
     downloadModel.dataTask = dataTask;
     downloadModel.outputStream = [NSOutputStream outputStreamToFileAtPath:downloadFilePath append:YES];
     downloadModel.url = url;
@@ -165,6 +166,7 @@ static SLDownloadManager *downloadManager;
 - (NSString *)downloadFileDir {
     if (!_downloadFileDir) {
         _downloadFileDir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
+        _downloadFileDir = [_downloadFileDir stringByAppendingPathComponent:@"sldownloadfile"];
     }
     BOOL isDirectory = NO;
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -405,5 +407,15 @@ static SLDownloadManager *downloadManager;
         }
     });
     [downloadManager downloadNext];
+}
+
+- (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
+    NSString *identifier = session.configuration.identifier;
+    if ([SLNetworkTool sl_networkEmptyString:identifier]) return;
+    void(^handle)(void) = [[[SLDownloadManager sharedManager] sessionCompleteHandle] objectForKey:identifier];
+    if (handle) {
+        [[SLDownloadManager sharedManager].sessionCompleteHandle removeObjectForKey:identifier];
+        handle();
+    }
 }
 @end
