@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'CSLNetwork'
-  s.version      = '0.0.3'
+  s.version      = '0.0.4'
   s.summary      = 'network include get post download upload file base afn 3.0'
   s.homepage     = 'https://github.com/chengshiliang/CSLNetwork'
   s.license      = { :type => 'MIT', :file => 'LICENSE' }

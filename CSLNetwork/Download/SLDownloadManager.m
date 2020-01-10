@@ -10,6 +10,22 @@
 #import <CSLNetwork/SLNetworkTool.h>
 #import <CSLNetwork/NSURLSession+CorrectedResumeData.h>
 
+@interface SLDownloadModel : NSObject
+@property (nonatomic, strong) NSURLSessionDownloadTask *dataTask;
+
+@property (nonatomic, strong) NSURL *url;
+
+@property (nonatomic, assign) SLDownloadState state;
+
+@property (nonatomic, strong) NSData *resumeData;
+
+@property (nonatomic, copy) void (^stateBlock)(SLDownloadState state);
+
+@property (nonatomic, copy) void (^progressBlock)(int64_t receivedSize, int64_t expectedSize, CGFloat progress);
+
+@property (nonatomic, copy) void (^completionBlock)(BOOL isSuccess, NSString *filePath, NSError *_Nullable error);
+@end
+
 @implementation SLDownloadModel
 
 @end
@@ -17,6 +33,7 @@
 @interface SLDownloadManager()<NSURLSessionDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate>
 @property (nonatomic, strong) NSURLSession *session;
 @property (nonatomic, strong) NSMutableDictionary *downloadModelInfo;
+@property (nonatomic, strong) NSMutableDictionary *downloadLengthInfo;
 @property (nonatomic, strong) NSMutableArray *downloadingModels;
 @property (nonatomic, strong) NSMutableArray *waitingModels;
 @property (nonatomic, strong) NSLock *lock;
@@ -26,11 +43,17 @@
 @implementation SLDownloadManager
 static SLDownloadManager *downloadManager;
 - (NSMutableDictionary *)downloadModelInfo {
-    
     if (!_downloadModelInfo) {
         _downloadModelInfo = [NSMutableDictionary dictionary];
     }
     return _downloadModelInfo;
+}
+
+- (NSMutableDictionary *)downloadLengthInfo {
+    if (!_downloadLengthInfo) {
+        _downloadLengthInfo = [NSMutableDictionary dictionary];
+    }
+    return _downloadLengthInfo;
 }
 
 - (NSMutableArray *)downloadingModels {
@@ -100,10 +123,10 @@ static SLDownloadManager *downloadManager;
     if (downloadModel) {
         if (downloadModel.stateBlock) downloadModel.stateBlock(downloadModel.state);
         if (downloadModel.progressBlock) {
-            int64_t expectedSize = downloadModel.totalLength;
-            if (expectedSize == 0) return;
-            CGFloat progress = 1.0 * receivedSize / expectedSize;
-            downloadModel.progressBlock(receivedSize, expectedSize, progress);
+            NSNumber *expectedSize = downloadManager.downloadLengthInfo[fileName];
+            if ([expectedSize longLongValue] > 0) {
+                downloadModel.progressBlock(receivedSize, [expectedSize longLongValue], 1.0 * receivedSize / [expectedSize longLongValue]);
+            }
         }
         [downloadManager downloadWithModel:downloadModel];
         return;
@@ -129,8 +152,8 @@ static SLDownloadManager *downloadManager;
     [downloadManager.lock lock];
     SLDownloadModel *downloadModel = downloadManager.waitingModels.firstObject;
     [downloadManager.waitingModels removeObjectAtIndex:0];
-    [downloadManager downloadWithModel:downloadModel];
     [downloadManager.lock unlock];
+    [downloadManager downloadWithModel:downloadModel];
 }
 
 - (NSString*)fileNameOfURL:(NSURL *)url {
@@ -140,7 +163,7 @@ static SLDownloadManager *downloadManager;
 
 - (void)downloadWithModel:(SLDownloadModel *)downloadModel {
     [downloadManager.lock lock];
-    if ([downloadManager hasSpaceDownloadQueue]) {
+    if ([downloadManager hasSpaceDownloadQueue] && ![downloadManager.downloadingModels containsObject:downloadModel]) {
         [downloadManager.downloadingModels addObject:downloadModel];
         if (downloadModel.resumeData) {
             NSString *fileName = [downloadManager fileNameOfURL:downloadModel.url];
@@ -156,7 +179,7 @@ static SLDownloadManager *downloadManager;
         }
         [downloadModel.dataTask resume];
         downloadModel.state = SLDownloadStateRunning;
-    } else {
+    } else if (![downloadManager.waitingModels containsObject:downloadModel]){
         [downloadManager.waitingModels insertObject:downloadModel atIndex:0];
         downloadModel.state = SLDownloadStateWaiting;
     }
@@ -182,10 +205,6 @@ static SLDownloadManager *downloadManager;
     return _downloadFileDir;
 }
 
-- (NSString *)downloadFileLengthPath {
-    return [[downloadManager downloadFileDir]stringByAppendingPathComponent:@"SLDownloadTotalLength.plist"];
-}
-
 - (NSString *)downloadFilePathOfString:(NSString *)urlString {
     return [[downloadManager downloadFileDir]stringByAppendingPathComponent:urlString];
 }
@@ -204,11 +223,10 @@ static SLDownloadManager *downloadManager;
 
 - (NSInteger)totalLength:(NSURL *)url {
     NSString *fileName = [downloadManager fileNameOfURL:url];
-    NSDictionary *filesTotalLenthInfo = [NSDictionary dictionaryWithContentsOfFile:[downloadManager downloadFileLengthPath]];
-    if (!filesTotalLenthInfo || !filesTotalLenthInfo[fileName]) {
+    if (!downloadManager.downloadLengthInfo || !downloadManager.downloadLengthInfo[fileName]) {
         return 0;
     }
-    return [filesTotalLenthInfo[fileName] integerValue];
+    return [downloadManager.downloadLengthInfo[fileName] integerValue];
 }
 
 - (BOOL)doneDownloadOfURL:(NSURL *)url {
@@ -227,11 +245,6 @@ static SLDownloadManager *downloadManager;
     if (!downloadModel) return;
     [downloadManager.lock lock];
     downloadModel.state = SLDownloadStateSuspended;
-    if (downloadModel.stateBlock) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            downloadModel.stateBlock(SLDownloadStateSuspended);
-        });
-    }
     if ([downloadManager.downloadingModels containsObject:downloadModel]) {
         __weak typeof(downloadModel)weakModel = downloadModel;
         [downloadModel.dataTask cancelByProducingResumeData:^(NSData * _Nullable resumeData) {
@@ -242,21 +255,14 @@ static SLDownloadManager *downloadManager;
         [downloadManager.waitingModels addObject:downloadModel];
     }
     [downloadManager.lock unlock];
+    if (downloadModel.stateBlock) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            downloadModel.stateBlock(downloadModel.state);
+        });
+    }
     [downloadManager downloadNext];
 }
 - (void)suspendAllDownloads {
-    if (downloadManager.downloadModelInfo.count <= 0) return;
-    [downloadManager.lock lock];
-    for (int i = 0; i<downloadManager.waitingModels.count; i++) {
-        SLDownloadModel *downloadModel = downloadManager.waitingModels[i];
-        downloadModel.state = SLDownloadStateSuspended;
-        if (downloadModel.stateBlock) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                downloadModel.stateBlock(SLDownloadStateSuspended);
-            });
-        }
-    }
-    [downloadManager.waitingModels removeAllObjects];
     for (int i = 0; i<downloadManager.downloadingModels.count; i++) {
         SLDownloadModel *downloadModel = downloadManager.downloadingModels[i];
         __weak typeof(downloadModel)weakModel = downloadModel;
@@ -270,8 +276,9 @@ static SLDownloadManager *downloadManager;
                 downloadModel.stateBlock(SLDownloadStateSuspended);
             });
         }
-        [downloadManager.waitingModels addObject:downloadModel];
     }
+    [downloadManager.lock lock];
+    [downloadManager.waitingModels addObjectsFromArray:downloadManager.downloadingModels];
     [downloadManager.downloadingModels removeAllObjects];
     [downloadManager.lock unlock];
 }
@@ -284,7 +291,9 @@ static SLDownloadManager *downloadManager;
 }
 - (void)resumeAllDownloads {
     if (downloadManager.downloadModelInfo.count <= 0) return;
+    [downloadManager.lock lock];
     NSArray *downloadModels = downloadManager.downloadModelInfo.allValues;
+    [downloadManager.lock unlock];
     for (int i = 0; i<downloadModels.count; i++) {
         SLDownloadModel *downloadModel = downloadModels[i];
         [downloadManager downloadWithModel:downloadModel];
@@ -296,55 +305,50 @@ static SLDownloadManager *downloadManager;
     SLDownloadModel *downloadModel = downloadManager.downloadModelInfo[fileName];
     if (!downloadModel) return;
     [downloadManager.lock lock];
-    __weak typeof(downloadModel)weakModel = downloadModel;
-    [downloadModel.dataTask cancelByProducingResumeData:^(NSData * _Nullable resumeData) {
-        __strong typeof(downloadModel)strongModel = weakModel;
-        strongModel.resumeData = resumeData;
-    }];
-    downloadModel.state = SLDownloadStateSuspended;
-    if (downloadModel.stateBlock) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            downloadModel.stateBlock(SLDownloadStateSuspended);
-        });
-    }
     if ([downloadManager.downloadingModels containsObject:downloadModel]) {
         [downloadManager.downloadingModels removeObject:downloadModel];
         [downloadManager.waitingModels addObject:downloadModel];
     }
     [downloadManager.lock unlock];
+    __weak typeof(downloadModel)weakModel = downloadModel;
+    [downloadModel.dataTask cancelByProducingResumeData:^(NSData * _Nullable resumeData) {
+        __strong typeof(downloadModel)strongModel = weakModel;
+        strongModel.resumeData = resumeData;
+    }];
+    downloadModel.state = SLDownloadStateCanceled;
+    if (downloadModel.stateBlock) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            downloadModel.stateBlock(SLDownloadStateCanceled);
+        });
+    }
     [downloadManager downloadNext];
 }
 - (void)cancelAllDownloads {
     if (downloadManager.downloadModelInfo.count <= 0) return;
     [downloadManager.lock lock];
-    NSArray *downloadModels = downloadManager.downloadModelInfo.allValues;
-    for (int i = 0; i<downloadModels.count; i++) {
-        SLDownloadModel *downloadModel = downloadModels[i];
+    for (int i = 0; i<downloadManager.downloadingModels.count; i++) {
+        SLDownloadModel *downloadModel = downloadManager.downloadingModels[i];
         __weak typeof(downloadModel)weakModel = downloadModel;
         [downloadModel.dataTask cancelByProducingResumeData:^(NSData * _Nullable resumeData) {
             __strong typeof(downloadModel)strongModel = weakModel;
             strongModel.resumeData = resumeData;
         }];
-        downloadModel.state = SLDownloadStateSuspended;
+        downloadModel.state = SLDownloadStateCanceled;
         if (downloadModel.stateBlock) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                downloadModel.stateBlock(SLDownloadStateSuspended);
+                downloadModel.stateBlock(SLDownloadStateCanceled);
             });
         }
-        if ([downloadManager.downloadingModels containsObject:downloadModel]) {
-            [downloadManager.downloadingModels removeObject:downloadModel];
-            [downloadManager.waitingModels addObject:downloadModel];
-        }
     }
+    [downloadManager.waitingModels addObjectsFromArray:downloadManager.downloadingModels];
+    [downloadManager.downloadingModels removeAllObjects];
     [downloadManager.lock unlock];
 }
 
 - (void)deleteFile:(NSString *)fileName {
     if ([SLNetworkTool sl_networkEmptyString:fileName]) return;
     dispatch_async(downloadManager.downloadQueue, ^{
-        NSMutableDictionary *filesTotalLength = [NSMutableDictionary dictionaryWithContentsOfFile:[downloadManager downloadFileLengthPath]];
-        [filesTotalLength removeObjectForKey:fileName];
-        [filesTotalLength writeToFile:[downloadManager downloadFileLengthPath] atomically:YES];
+        [downloadManager.downloadLengthInfo removeObjectForKey:fileName];
         NSFileManager *fileManager = [NSFileManager defaultManager];
         NSString *downloadFilePath = [downloadManager downloadFilePathOfString:fileName];
         if ([fileManager fileExistsAtPath:downloadFilePath]) {
@@ -357,6 +361,7 @@ static SLDownloadManager *downloadManager;
     NSString *fileName = [downloadManager fileNameOfURL:url];
     SLDownloadModel *downloadModel = downloadManager.downloadModelInfo[fileName];
     if (!downloadModel) return;
+    [downloadManager.lock lock];
     [downloadManager.downloadModelInfo removeObjectForKey:fileName];
     if ([downloadManager.waitingModels containsObject:downloadModel]) {
         [downloadManager.waitingModels removeObject:downloadModel];
@@ -364,11 +369,18 @@ static SLDownloadManager *downloadManager;
     if ([downloadManager.downloadingModels containsObject:downloadModel]) {
         [downloadManager.downloadingModels removeObject:downloadModel];
     }
+    [downloadManager.lock unlock];
     [downloadManager deleteFile:[downloadManager fileNameOfURL:url]];
     [downloadManager cancelDownloadOfURL:url];
 }
 - (void)deleteAllFiles {
     [downloadManager cancelAllDownloads];
+    [downloadManager.lock lock];
+    [downloadManager.downloadModelInfo removeAllObjects];
+    [downloadManager.waitingModels removeAllObjects];
+    [downloadManager.downloadingModels removeAllObjects];
+    [downloadManager.downloadLengthInfo removeAllObjects];
+    [downloadManager.lock unlock];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     dispatch_async(downloadManager.downloadQueue, ^{
         NSArray *fileNames = [fileManager contentsOfDirectoryAtPath:[downloadManager downloadFileDir] error:nil];
@@ -377,9 +389,6 @@ static SLDownloadManager *downloadManager;
             [fileManager removeItemAtPath:filePath error:nil];
         }
     });
-    [downloadManager.downloadModelInfo removeAllObjects];
-    [downloadManager.waitingModels removeAllObjects];
-    [downloadManager.downloadingModels removeAllObjects];
 }
 
 #pragma mark NSURLSessionDelegate
@@ -392,20 +401,21 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
     if (!downloadModel) return;
     dispatch_async(dispatch_get_main_queue(), ^{
         if (downloadModel.progressBlock) {
-            if (totalBytesExpectedToWrite == 0) return;
-            CGFloat progress = 1.0 * totalBytesWritten / totalBytesExpectedToWrite;
-            downloadModel.progressBlock(totalBytesWritten, totalBytesExpectedToWrite, progress);
+            if (totalBytesExpectedToWrite > 0) {
+                CGFloat progress = 1.0 * totalBytesWritten / totalBytesExpectedToWrite;
+                downloadModel.progressBlock(totalBytesWritten, totalBytesExpectedToWrite, progress);
+            }
         }
     });
-    if (downloadModel.totalLength > 0) return;
-    dispatch_async(downloadManager.downloadQueue, ^{
-        downloadModel.totalLength = totalBytesExpectedToWrite;
-        NSURL *url = downloadModel.url;
-        NSString *fileName = [downloadManager fileNameOfURL:url];
-        NSMutableDictionary *filesTotalLength = [NSMutableDictionary dictionaryWithContentsOfFile:[downloadManager downloadFileLengthPath]] ?: [NSMutableDictionary dictionary];
-        filesTotalLength[fileName] = @(totalBytesExpectedToWrite);
-        [filesTotalLength writeToFile:[downloadManager downloadFileLengthPath] atomically:YES];
-    });
+    NSURL *url = downloadModel.url;
+    NSString *fileName = [downloadManager fileNameOfURL:url];
+    if (!downloadManager.downloadLengthInfo[fileName]) {
+        dispatch_async(downloadManager.downloadQueue, ^{
+            [downloadManager.lock lock];
+            downloadManager.downloadLengthInfo[fileName] = @(totalBytesExpectedToWrite);
+            [downloadManager.lock unlock];
+        });
+    }
 }
 
 -(void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {
@@ -413,6 +423,14 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
     if (!downloadModel) return;
     NSString *filePath = [downloadManager downloadFilePathOfURL:downloadModel.url];
     [[NSFileManager defaultManager]moveItemAtURL:location toURL:[NSURL fileURLWithPath:filePath] error:nil];
+    downloadModel.state = SLDownloadStateCompleted;
+    [downloadManager.downloadModelInfo removeObjectForKey:downloadTask.taskDescription];
+    [downloadManager.downloadingModels removeObject:downloadModel];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (downloadModel.stateBlock) downloadModel.stateBlock(SLDownloadStateCompleted);
+        if (downloadModel.completionBlock) downloadModel.completionBlock(YES, filePath, nil);
+    });
+    [downloadManager downloadNext];
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error{
@@ -421,22 +439,15 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
     }
     SLDownloadModel *downloadModel = downloadManager.downloadModelInfo[task.taskDescription];
     if (!downloadModel) return;
-    NSURL *url = downloadModel.url;
-    NSString *fullPath = [downloadManager downloadFilePathOfURL:url];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([downloadManager doneDownloadOfURL:url]) {
-            downloadModel.state = SLDownloadStateCompleted;
-            [downloadManager.downloadModelInfo removeObjectForKey:task.taskDescription];
-            [downloadManager.downloadingModels removeObject:downloadModel];
-            if (downloadModel.stateBlock) downloadModel.stateBlock(SLDownloadStateCompleted);
-            if (downloadModel.completionBlock) downloadModel.completionBlock(YES, fullPath, nil);
-        } else {
+    if (error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSURL *url = downloadModel.url;
+            NSString *fullPath = [downloadManager downloadFilePathOfURL:url];
             downloadModel.state = SLDownloadStateFailed;
             if (downloadModel.stateBlock) downloadModel.stateBlock(SLDownloadStateFailed);
             if (downloadModel.completionBlock) downloadModel.completionBlock(NO, fullPath, error);
-        }
-        [downloadManager downloadNext];
-    });
+        });
+    }
 }
 
 - (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {

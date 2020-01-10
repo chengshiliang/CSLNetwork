@@ -19,24 +19,6 @@ typedef NS_ENUM(NSInteger, SLDownloadState) {
     SLDownloadStateFailed
 };
 
-@interface SLDownloadModel : NSObject
-@property (nonatomic, strong) NSURLSessionDownloadTask *dataTask;
-
-@property (nonatomic, strong) NSURL *url;
-
-@property (nonatomic, assign) SLDownloadState state;
-
-@property (nonatomic, strong) NSData *resumeData;
-
-@property (nonatomic, assign) int64_t totalLength;
-
-@property (nonatomic, copy) void (^stateBlock)(SLDownloadState state);
-
-@property (nonatomic, copy) void (^progressBlock)(int64_t receivedSize, int64_t expectedSize, CGFloat progress);
-
-@property (nonatomic, copy) void (^completionBlock)(BOOL isSuccess, NSString *filePath, NSError *_Nullable error);
-@end
-
 @interface SLDownloadManager : NSObject
 @property (nonatomic, copy) NSString *downloadFileDir;// 文件下载路径
 @property (nonatomic, strong, readonly) NSURLSession *session;

@@ -98,7 +98,7 @@ static NSString *SLNetworkResponseValidateError = @"SLNetworkResponseValidateErr
         task = [sharedInstance.sessionManager uploadTaskWithStreamedRequest:request
                                                                    progress:uploadProgressBlock
                                                           completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-            __strong typeof (weakSelf)strongSelf = weakSelf;
+            __strong typeof (self)strongSelf = weakSelf;
             [strongSelf handleReponseResultWithModel:model
                                              reponse:response
                                       responseObject:responseObject
@@ -111,7 +111,7 @@ static NSString *SLNetworkResponseValidateError = @"SLNetworkResponseValidateErr
                                                    uploadProgress:nil
                                                  downloadProgress:nil
                                                 completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-            __strong typeof (weakSelf)strongSelf = weakSelf;
+            __strong typeof (self)strongSelf = weakSelf;
             [strongSelf handleReponseResultWithModel:model
                                              reponse:response
                                       responseObject:responseObject

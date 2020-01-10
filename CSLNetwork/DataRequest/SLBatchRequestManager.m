@@ -93,7 +93,7 @@ static SLBatchRequestAgent *sharedInstance;
         NSNumber *taskId = [[SLNetworkManager share]requestWithModel:requestModel.model
                                                       uploadProgress:requestModel.uploadProgressBlock
                                                    completionHandler:^(NSURLResponse * _Nonnull response, id  _Nonnull responseObject, NSError * _Nonnull error, BOOL needHandle) {
-            __strong typeof (weakSelf)strongSelf = weakSelf;
+            __strong typeof (self)strongSelf = weakSelf;
             !requestModel.completionHandle ?: requestModel.completionHandle(response, responseObject, error, needHandle);
             dispatch_group_leave(strongSelf.group);
         }];
@@ -101,7 +101,7 @@ static SLBatchRequestAgent *sharedInstance;
     }
     __weak typeof (self)weakSelf = self;
     dispatch_group_notify(self.group, dispatch_get_main_queue(), ^{
-        __strong typeof (weakSelf)strongSelf = weakSelf;
+        __strong typeof (self)strongSelf = weakSelf;
         [[SLBatchRequestAgent share]removeBatchRequest:strongSelf];
         !completeBlock?:completeBlock();
     });
