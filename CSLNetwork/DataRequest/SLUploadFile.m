@@ -17,18 +17,23 @@
 
 @implementation SLUploadFile
 + (instancetype)initFileName:(NSString *)name fileData:(nonnull NSData *)fileData {
-    return [[self alloc]initFileName:name fileData:fileData];
+    return [[self alloc]initFileName:name fileData:fileData mineType:nil];
 }
 
-- (instancetype)initFileName:(NSString *)name fileData:(nonnull NSData *)fileData {
+- (instancetype)initFileName:(NSString *)name fileData:(nonnull NSData *)fileData mineType:(NSString *)mineType{
     if (self == [super init]) {
-        self.mimeType = [SLNetworkTool fileTypeFromFileName:name];
+        if ([SLNetworkTool sl_networkEmptyString:mineType]) self.mimeType = [SLNetworkTool fileTypeFromFileName:name];
+        else self.mimeType = mineType;
         if ([SLNetworkTool sl_networkEmptyString:self.mimeType]) return self;
         self.fileName = name;
         self.name = [SLNetworkTool sl_md5String:name];
         self.fileData = fileData;
     }
     return self;
+}
+
++ (instancetype)initFileName:(NSString *)name fileData:(NSData *)fileData mineType:(NSString *)mineType {
+    return [[self alloc]initFileName:name fileData:fileData mineType:mineType];
 }
 
 - (NSString *)description {

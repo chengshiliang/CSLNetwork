@@ -10,6 +10,7 @@
 NS_ASSUME_NONNULL_BEGIN
 @interface SLUploadFile : NSObject
 + (instancetype)initFileName:(NSString *)name fileData:(NSData *)fileData;
++ (instancetype)initFileName:(NSString *)name fileData:(NSData *)fileData mineType:(NSString *)mineType;
 
 - (NSData *)fileData;
 - (NSString *)fileName;
