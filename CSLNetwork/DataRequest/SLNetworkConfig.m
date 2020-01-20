@@ -46,6 +46,12 @@ static SLNetworkConfig *sharedInstance;
     }
     return NO;
 }
+- (BOOL)handleRequest:(NSMutableURLRequest *)request {
+    if (sharedInstance.requestBeforeBlock) {
+        return sharedInstance.requestBeforeBlock(request);
+    }
+    return NO;
+}
 - (NSTimeInterval)requestTimeoutInteval {
     if (_requestTimeoutInteval <= 0) {
         return 30;

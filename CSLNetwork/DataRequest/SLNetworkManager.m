@@ -91,6 +91,7 @@ static NSString *SLNetworkResponseValidateError = @"SLNetworkResponseValidateErr
         request = [sharedInstance.requestSerialization generateRequestWithModel:model requestSerialize:requestSerialize];
     }
     if (!request) return @-1;
+    if ([[SLNetworkConfig share] handleRequest:request]) return @-1;// 请求被拦截掉
     __weak typeof (sharedInstance)weakSelf = sharedInstance;
     NSURLSessionDataTask *task;
     NSMutableArray *taskIdentifier = [NSMutableArray arrayWithObject:@(-1)];
